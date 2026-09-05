@@ -17,7 +17,7 @@
 ```
 game-state/
 ├── public/     明文，玩家與使用者都可讀，且不會劇透
-│   ├── HOSTING-PROCEDURE.md   規則副本
+│   ├── HOSTING-PROCEDURE/     規則副本（目錄，`.claude/rules/` 六份）
 │   ├── 00-players.md          座位、暱稱、結局
 │   ├── 01-timeline.md         每階段公開播報流水帳（追加式）
 │   ├── 02-status.md           ★ 每階段覆寫，見下
@@ -135,7 +135,7 @@ game-state/
 
 | 事件 | 要更新什麼 |
 |---|---|
-| 開局洗牌後 | `roles.json` + `potions.json`（含 `"result": null`） |
+| 開局洗牌後 | `roles.json`（**你寫**）；`potions.json`（含 `"result": null`）與 `nightlog.json` 由 reporter 的 `/reporter-init` 建 |
 | 每個夜間階段結束 | `nightlog.json`（append 一夜）+ `potions.json` |
 | **天亮公告發出後** | `potions.json`（存活/死亡變動） |
 | 投票結算後 | `nightlog.json`（append 一筆 day_votes）+ `potions.json` |
@@ -158,7 +158,7 @@ game-state/
 
 | 時機 | 指派 | 產出 |
 |---|---|---|
-| 開局完成後（`/god-open` 第 12 步） | `/reporter-build` | 兩份 |
+| 開局・發牌時（`/god-open` 第 8 步） | `/reporter-init` | 建狀態檔＋驗證＋兩份。**唯一要它回報的一則** |
 | 夜間收尾 | `/reporter-build spoiler` | **只有劇透版** |
 | 天亮公告發出後 | `/reporter-build` | 兩份 |
 | **發言輪每一位落檔後** | `/reporter-collect` → `/reporter-build` | 兩份，**送完就走、不等回覆** |
