@@ -24,7 +24,7 @@
 
 > 暱稱在點名時指派，**早於洗牌** —— 那個時間點連上帝都還不知道任何人的底牌，
 > 所以座位與暱稱的對應在結構上不可能攜帶身份資訊。名單池在
-> `.claude/skills/god-roll-call/SKILL.md` 第 2 步。
+> `.claude/skills/god-open/SKILL.md` 第 4 步。
 
 ## `ping_reporter` —— 點名與通訊測試（reporter 用）
 

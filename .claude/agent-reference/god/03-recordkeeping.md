@@ -158,7 +158,7 @@ game-state/
 
 | 時機 | 指派 | 產出 |
 |---|---|---|
-| 開局完成後（`/god-setup` 第 9.5 步） | `/reporter-build` | 兩份 |
+| 開局完成後（`/god-open` 第 12 步） | `/reporter-build` | 兩份 |
 | 夜間收尾 | `/reporter-build spoiler` | **只有劇透版** |
 | 天亮公告發出後 | `/reporter-build` | 兩份 |
 | **發言輪每一位落檔後** | `/reporter-collect` → `/reporter-build` | 兩份，**送完就走、不等回覆** |

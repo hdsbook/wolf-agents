@@ -77,7 +77,7 @@ description: 狼人殺主持人。負責發牌、主持夜晚與白天的七個�
 
 | 你的情境 | 工作流程 | 搭配的 skill |
 |---|---|---|
-| **11 個 session 剛建好，還沒發牌** | `01-opening.md` | `/god-roll-call` → `/god-setup` |
+| **11 個 session 剛建好，還沒發牌** | `01-opening.md` | `/god-open` |
 | **正在跑第 N 天的循環** | `02-round.md` | `/god-night` → `/god-day` → `/god-vote` → `/god-audit` |
 | **要寫檔案、更新狀態** | `03-recordkeeping.md` | —— |
 | **要開口說話（對玩家或對使用者）** | `04-reporting.md` | `/god-dispatch` |

@@ -10,7 +10,7 @@ description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/N
 | 時機 | 情況 |
 |---|---|
 | **終局後** | `/god-endgame` 走完，戰報、稽核、MVP、最終報表都寫好了 |
-| **開局前** | `/god-setup` 的殘留檢查發現 `game-state/` 還有上一局 |
+| **開局前** | `/god-open` 第 0 步的殘留檢查發現 `game-state/` 還有上一局 |
 
 ## 為什麼歸檔＝解除保護
 
