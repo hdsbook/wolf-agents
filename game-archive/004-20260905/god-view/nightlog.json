@@ -1,0 +1,154 @@
+{
+  "nights": [
+    {
+      "night": 1,
+      "wolf_proposals": {
+        "P3": "P9",
+        "P6": "P9",
+        "P7": "P9"
+      },
+      "wolf_target": "P9",
+      "wolf_rounds": 1,
+      "seer": {
+        "by": "P1",
+        "target": "P6",
+        "result": "狼人"
+      },
+      "witch": {
+        "by": "P4",
+        "action": "解藥",
+        "target": "P9"
+      },
+      "deaths": [],
+      "note": "平安夜"
+    },
+    {
+      "night": 2,
+      "wolf_proposals": {
+        "P3": "P1",
+        "P7": "P1"
+      },
+      "wolf_target": "P1",
+      "wolf_rounds": 1,
+      "seer": {
+        "by": "P1",
+        "target": "P7",
+        "result": "狼人"
+      },
+      "witch": {
+        "by": "P4",
+        "action": "不用藥",
+        "target": null
+      },
+      "deaths": [
+        "P1"
+      ],
+      "note": "預言家 P1 被刀身亡，非獵人故無開槍"
+    },
+    {
+      "night": 3,
+      "wolf_proposals_round1": {
+        "P3": "P2",
+        "P7": "P4"
+      },
+      "wolf_proposals_round2": {
+        "P3": "P4",
+        "P7": "P4"
+      },
+      "wolf_target": "P4",
+      "wolf_rounds": 2,
+      "seer": null,
+      "witch": {
+        "by": "P4",
+        "action": "毒藥",
+        "target": "P3"
+      },
+      "deaths": [
+        "P4",
+        "P3"
+      ],
+      "note": "雙死：P4 被狼刀，P3 被女巫毒殺。兩人皆非獵人，無開槍。"
+    },
+    {
+      "night": 4,
+      "ruleset": "新版（狼隊長制）",
+      "wolf_captain": "P7",
+      "teammate_signals": {},
+      "wolf_target": "P7 拍板：P2",
+      "wolf_proposals": {
+        "P7": "P2"
+      },
+      "wolf_rounds": 1,
+      "succession": "無",
+      "day_assignments": null,
+      "seer": null,
+      "witch": null,
+      "deaths": [
+        "P2"
+      ],
+      "note": "狼隊僅存 P7 一人，依規則他即隊長，直接拍板。刀殺 P2。P2 非獵人，無開槍。"
+    }
+  ],
+  "day_votes": [
+    {
+      "day": 1,
+      "votes": {
+        "P1": "P6",
+        "P2": "P6",
+        "P3": "P6",
+        "P4": "P6",
+        "P5": "P6",
+        "P6": "P1",
+        "P7": "P5",
+        "P8": "P6",
+        "P9": "P6"
+      },
+      "tally": {
+        "P6": 7,
+        "P1": 1,
+        "P5": 1
+      },
+      "eliminated": "P6",
+      "tie": false,
+      "pk": false
+    },
+    {
+      "day": 2,
+      "votes": {
+        "P2": "P3",
+        "P3": "P9",
+        "P4": "P9",
+        "P5": "P8",
+        "P7": "P9",
+        "P8": "P2",
+        "P9": "P3"
+      },
+      "tally": {
+        "P9": 3,
+        "P3": 2,
+        "P8": 1,
+        "P2": 1
+      },
+      "eliminated": "P9",
+      "tie": false,
+      "pk": false
+    },
+    {
+      "day": 3,
+      "votes": {
+        "P2": "P8",
+        "P5": "P2",
+        "P7": "P8",
+        "P8": "P7"
+      },
+      "tally": {
+        "P8": 2,
+        "P2": 1,
+        "P7": 1
+      },
+      "eliminated": "P8",
+      "tie": false,
+      "pk": false
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "antidote_used": true,
+  "poison_used": true,
+  "hunter_fired": false,
+  "alive": [
+    "P5",
+    "P7"
+  ],
+  "dead": [
+    {
+      "seat": "P6",
+      "cause": "被投票出局",
+      "day": 1
+    },
+    {
+      "seat": "P1",
+      "cause": "被狼人刀殺",
+      "night": 2
+    },
+    {
+      "seat": "P9",
+      "cause": "被投票出局",
+      "day": 2
+    },
+    {
+      "seat": "P4",
+      "cause": "被狼人刀殺",
+      "night": 3
+    },
+    {
+      "seat": "P3",
+      "cause": "被女巫毒殺",
+      "night": 3
+    },
+    {
+      "seat": "P8",
+      "cause": "被投票出局",
+      "day": 3
+    },
+    {
+      "seat": "P2",
+      "cause": "被狼人刀殺",
+      "night": 4
+    }
+  ],
+  "day": 4,
+  "phase": "第 4 夜結算完成，勝負已達成",
+  "result": {
+    "winner": "狼人",
+    "reason": "屠邊（平民全滅）",
+    "day": 4
+  }
+}

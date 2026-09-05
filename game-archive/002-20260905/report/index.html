@@ -1,0 +1,178 @@
+<title>狼人殺戰況</title><style>
+:root{
+  --bg:#f7f6f3; --panel:#ffffff; --ink:#1c1b19; --muted:#6b6862;
+  --line:#e0ddd6; --accent:#8a6d3b; --good:#2f6f4f; --evil:#a83a2c;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#16150f; --panel:#1f1e17; --ink:#ece8dd; --muted:#9a958a;
+    --line:#33312a; --accent:#c8a75c; --good:#6fbf92; --evil:#e0705f;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.75 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+header{border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:22px}
+h1{margin:0 0 6px;font-size:26px;letter-spacing:.04em}
+.sub{color:var(--muted);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 26px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  padding:6px 14px;font-size:13px}
+.chip b{color:var(--accent)}
+h2{font-size:17px;margin:34px 0 12px;padding-left:10px;
+  border-left:3px solid var(--accent)}
+.seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.seat{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px}
+.seat .n{font-size:17px;font-weight:700}
+.seat .nick{font-size:13px;color:var(--muted)}
+.seat .role{font-size:12px;margin-top:5px;font-weight:700}
+.seat.dead{opacity:.45}
+.seat.dead .n::after{content:" X";color:var(--evil)}
+.seat .fate{font-size:11px;color:var(--muted);margin-top:3px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:12px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:rgba(138,109,59,.09);white-space:nowrap}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  margin-bottom:9px;padding:0 14px}
+details[open]{padding-bottom:12px}
+summary{cursor:pointer;padding:11px 0;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+.body p{margin:0 0 11px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;
+  margin-left:7px;vertical-align:middle;font-weight:700}
+.tag.g{background:rgba(47,111,79,.16);color:var(--good)}
+.tag.e{background:rgba(168,58,44,.16);color:var(--evil)}
+.banner{margin:18px 0 4px;padding:12px 16px;border-radius:8px;font-size:16px;
+  border:1px solid var(--line)}
+.banner b{font-size:19px}
+.banner.good{background:rgba(47,111,79,.12);color:var(--good)}
+.banner.evil{background:rgba(168,58,44,.12);color:var(--evil)}
+.night{border-left:3px solid var(--accent);padding-left:13px;margin-bottom:16px}
+.night h3{margin:0 0 7px;font-size:15px}
+.kv{font-size:13px;color:var(--muted)}
+.kv b{color:var(--ink)}
+footer{margin-top:50px;padding-top:14px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:12px}
+</style>
+<div class="wrap"><header><h1>狼人殺戰況</h1>
+<div class="sub">產生時間 2026-09-05 13:26 ｜ 資料來源 game-state</div></header>
+<div class="banner evil"><b>狼人陣營獲勝</b>　—— 屠邊（神職全滅）（第 3 天）</div>
+<div class="bar">
+<div class="chip">第 <b>3</b> 天</div>
+<div class="chip">階段 <b>game_over_announced_mvp_done</b></div>
+<div class="chip">存活 <b>5</b> / 9</div>
+<div class="chip">狼 <b>2</b> / 3 存活</div>
+</div>
+<h2>座位</h2>
+<div class="seats">
+<div class="seat dead">
+<div class="n">P1</div>
+<div class="nick">阿松</div>
+<div class="role" style="color:#d35400">獵人</div>
+</div>
+<div class="seat dead">
+<div class="n">P2</div>
+<div class="nick">山彥</div>
+<div class="role" style="color:#2980b9">預言家</div>
+</div>
+<div class="seat">
+<div class="n">P3</div>
+<div class="nick">白帆</div>
+<div class="role" style="color:#7f8c8d">村民</div>
+</div>
+<div class="seat dead">
+<div class="n">P4</div>
+<div class="nick">冬陽</div>
+<div class="role" style="color:#8e44ad">女巫</div>
+</div>
+<div class="seat">
+<div class="n">P5</div>
+<div class="nick">林間</div>
+<div class="role" style="color:#7f8c8d">村民</div>
+</div>
+<div class="seat dead">
+<div class="n">P6</div>
+<div class="nick">風鈴</div>
+<div class="role" style="color:#c0392b">狼人</div>
+</div>
+<div class="seat">
+<div class="n">P7</div>
+<div class="nick">青禾</div>
+<div class="role" style="color:#c0392b">狼人</div>
+</div>
+<div class="seat">
+<div class="n">P8</div>
+<div class="nick">湖心</div>
+<div class="role" style="color:#c0392b">狼人</div>
+</div>
+<div class="seat">
+<div class="n">P9</div>
+<div class="nick">雲杉</div>
+<div class="role" style="color:#7f8c8d">村民</div>
+</div>
+</div>
+<h2>第 1 天</h2>
+<details><summary>P6・風鈴<span class="tag e">狼人</span></summary><div class="body"><p>第一天資訊本來就少,平安夜也沒能從死亡名單抓到方向,所以我不會急著把票定死在誰身上。我目前傾向先聽,尤其是等等的神職如果願意站出來給點方向,會比我們互相亂猜有效率得多。</p><p>如果真的要我現在給一個態度,我會先觀察發言節奏本身——太急著帶風向、或是明顯避重就輕不回答關鍵問題的人,我會優先放進觀察名單。今天我暫時沒有明確要投的對象,想先看完一輪發言再做判斷。</p></div></details>
+<details><summary>P7・青禾<span class="tag e">狼人</span></summary><div class="body"><p>第一天平安夜其實資訊很少,我同意風鈴說的,現在急著定票意義不大。不過我會補一點:平安夜不代表狼隊昨晚一定沒動作,也可能是神職那邊有動作把死亡擋下來,所以我反而會比較在意等等神職願不願意出來給方向,而不是糾結昨晚為什麼沒死人。</p><p>如果真的要我先表態一個觀察對象,我會先看誰的發言邏輯前後兜不起來、或是明明資訊很少卻講得特別篤定——那種篤定感在第一天反而是個訊號。我目前沒有要投的對象,想先把一輪聽完。</p></div></details>
+<details><summary>P8・湖心<span class="tag e">狼人</span></summary><div class="body"><p>第一天平安夜確實資訊有限,我同意風鈴跟青禾說的,現在硬要定票沒什麼意義,反而容易冤枉人。不過我想補一個角度:與其等神職主動跳出來,不如大家都稍微鬆口聊聊自己對「昨晚可能發生什麼」的猜測——就算猜錯也沒關係,反而能從猜測的方向看出誰的思路合理、誰只是想蒙混過關。</p><p>我自己觀察的重點跟青禾類似,會留意誰講話特別急著把話題帶開,或是明明什麼線索都沒有卻先急著站隊某個人。今天我暫時沒有要投的對象,想先把後面幾位的發言聽完再做判斷。</p></div></details>
+<details><summary>P9・雲杉<span class="tag g">村民</span></summary><div class="body"><p>風鈴、青禾、湖心的觀察角度我都認同,第一天平安夜確實沒什麼硬線索,現在定票只是亂猜。不過我想換一個角度補充:與其只看誰講話急、誰講得篤定,我更想看接下來幾位發言時,彼此之間會不會開始互相「附和太快」——如果有人一路發言都是照著前一位的邏輯順下去,完全沒有自己補一個新角度,那種同質化本身也是一種可疑訊號,可能代表他們沒有真正在推理,只是在等安全的位置發言。</p><p>我今天也還沒有要投的對象,想先看完後面五位怎麼講,再回頭比對前面幾位有沒有前後矛盾。</p></div></details>
+<details><summary>P1・阿松<span class="tag g">獵人</span></summary><div class="body"><p>前面幾位的觀察角度我大致認同，第一天平安夜確實線索很薄，硬要定票只是亂猜，我也不打算現在鎖死任何人。</p><p>不過我想換個角度：與其只盯著「誰講得太急」或「誰太篤定」，我更在意誰的發言**只有態度、沒有內容**——像是重複前面的結論、加一句認同，卻沒補上任何自己的觀察或猜測。這種發言在票型上完全查不到痕跡，但如果狼人想安全度過白天，這正是最省力的打法：躲在多數人「先觀察」的共識後面，等資訊夠多、風險夠低了才出手。所以我會把「純附和、零新資訊」的發言也列進觀察名單，跟雲杉說的「同質化」是同一件事，但我想強調——這件事不需要等到後面幾位比對，現在前四位裡就已經看得出差異：風鈴跟青禾都有補新角度（節奏、篤定感），湖心提了「主動猜測」的方向，雲杉則是點出同質化本身的問題，四個人其實都有給出自己的觀察，還算及格。</p><p>今天我暫時也不指名任何人，想先聽完山彥、白帆、冬陽、林間怎麼講，再看誰是真的有想法、誰只是安全地跟著風向走。</p></div></details>
+<details><summary>P2・山彥<span class="tag g">預言家</span></summary><div class="body"><p>前面幾位提到的「同質化附和」跟「零新資訊」,我覺得都抓到重點,但我想補一個不同的角度:與其看誰講得少、講得空,我更在意誰的發言**表面上很完整,但其實只是把「先觀察」四個字包裝成一大段話**——風鈴的節奏觀察、青禾的篤定感訊號、湖心的猜測建議、雲杉的同質化角度,這些切入點都不錯,但目前每個人給出的都還是「觀察方法」,還沒有人真正把方法用在具體對象上。</p><p>我自己的觀察是:風鈴那段話邏輯很順、也主動拋出方法論,但恰好是最早發言、資訊最少的位置,卻寫得比後面幾位都更有結構感,這種「起手式就很完整」的狀態,我會放進我的觀察名單裡,之後看他實際點名時是不是也一樣果斷,還是又縮回「先觀察」。</p><p>今天我也還不指名投票對象,想先聽完白帆、冬陽、林間的發言,再綜合前面幾位的方法論來做第一輪比對。</p></div></details>
+<details><summary>P3・白帆<span class="tag g">村民</span></summary><div class="body"><p>前面六位的觀察角度我都聽完了，老實說我覺得已經開始有點「觀察方法論疊觀察方法論」的味道——風鈴看節奏、青禾看篤定感、湖心看主動猜測、雲杉看同質化、阿松看零新資訊、山彥看起手式完整度，這六種角度彼此都合理，但也代表我們花了六個發言在講「該怎麼觀察」，卻還沒有人真正拿這些方法去套一個具體對象，包括山彥自己點名觀察風鈴，也只是放進名單、沒有進一步論證。</p><p>我想換個角度：與其繼續疊加新的觀察方法，我更想知道剩下還沒發言的三位（我自己、冬陽、林間）之後會不會也走一樣的路——如果連我們三個也只是再貢獻一種新的「方法論」而不落地到人，那今天整輪發言就會變成九份漂亮的問卷，卻沒有任何一票有著力點。所以我自己選擇現在先不加碼新方法論，而是把山彥點名風鈴這件事往前推一步：如果風鈴等一下有機會補充或被問到，我會想聽他怎麼回應「起手式過於完整」這個質疑，這比繼續累加新角度更有推進性。</p><p>今天我也還沒有要投的對象，想先看完冬陽、林間怎麼講，再回頭看整輪九人裡誰的話真正落了地、誰只是安全地換了個包裝說「先觀察」。</p></div></details>
+<details><summary>P4・冬陽<span class="tag g">女巫</span></summary><div class="body"><p>前面七位講的觀察角度我都聽完了，說實話白帆點出的問題很準——我們已經疊了七種「怎麼觀察」，卻沒人真正落地到人，連山彥點名風鈴也只是放進名單、沒往下追。我不想再貢獻第八種方法論，所以換個做法：我直接看「山彥點名風鈴」這件事本身站不站得住腳。</p><p>山彥的理由是風鈴「起手式太完整」，但風鈴是隨機抽到的起始位，第一個發言反而更該講清楚一點，不然後面根本沒東西可以呼應——把「講得完整」直接當可疑，這個邏輯本身有點倒因為果。我更想看的是白帆提的那個測試：等風鈴真的被問到，是正面回應「起手式」這個質疑，還是顧左右而言他、把話題帶回「大家都先觀察」——這個反應比他一開始講得完不完整更有參考價值。</p><p>今天我也還不指名任何人，想先看林間怎麼講，同時等風鈴對山彥的質疑給出直接回應，再判斷這一輪誰是真的在推理、誰是把方法論當成安全發言的擋箭牌。</p></div></details>
+<details><summary>P5・林間<span class="tag g">村民</span></summary><div class="body"><p>前面八位的內容我都讀完了，白帆跟冬陽點出的問題我也認同——一路疊方法論疊到我這裡，如果我再貢獻第九種「怎麼觀察」的角度，那今天就真的變成九份問卷、零著力點。所以我不打算再加新方法論，而是直接談我對「山彥質疑風鈴」這條線的看法。</p><p>冬陽說山彥的邏輯是倒因為果，我大致同意，但我想補一點：風鈴身為起始位，發言結構完整本身不奇怪，真正值得觀察的其實是他之後的反應方式，而不是這段發言本身。所以我會把判斷延後到風鈴正面回應之後，而不是現在就用「起手式太完整」去給他扣分。目前這一整輪九個人裡，我反而比較好奇白帆跟冬陽這兩位——他們都選擇不加碼方法論、轉而直接檢驗別人的邏輯，這種做法本身推進性比較高，但也代表他們比誰都更清楚「疊方法論沒有用」，這是敏銳，還是恰好知道該把話題往哪裡帶，這兩者現在還分不出來，我會繼續觀察。</p><p>今天我也還不指名投票對象，想先看風鈴會不會針對「起手式過於完整」這個質疑給出正面回應，再決定下一步要往哪個方向推。</p></div></details>
+<div class="panel"><div class="scroll"><table>
+<tr><th>投票者</th><th>投給</th><th>理由</th></tr>
+<tr><td>P1<span class="tag g">獵人</span></td><td>棄票</td><td>唯一浮上檯面的爭點邏輯薄弱，且風鈴尚未正面回應，不想在證據不足時定票。</td></tr>
+<tr><td>P2<span class="tag g">預言家</span></td><td>P6<span class="tag e">狼人</span></td><td>山彥質疑的「起手式過於完整」風鈴至今未正面回應，選擇投他觀察 PK 反應。</td></tr>
+<tr><td>P3<span class="tag g">村民</span></td><td>棄票</td><td>山彥的質疑與冬陽、林間的反駁都還停留在推測，風鈴本人尚未回應，證據不足。</td></tr>
+<tr><td>P4<span class="tag g">女巫</span></td><td>棄票</td><td>山彥對風鈴的指控邏輯有疑點，留到風鈴正面回應或有更明確支點時再投。</td></tr>
+<tr><td>P5<span class="tag g">村民</span></td><td>棄票</td><td>判斷延後到風鈴正面回應「起手式過於完整」之後，目前證據不足。</td></tr>
+<tr><td>P6<span class="tag e">狼人</span></td><td>P2<span class="tag g">預言家</span></td><td>全場都選擇先觀察，唯獨山彥精準點名自己，這種篤定節奏本身更值得懷疑。</td></tr>
+<tr><td>P7<span class="tag e">狼人</span></td><td>棄票</td><td>全場仍在方法論階段，沒有線索落到具體行為，此時定票只是製造冤案。</td></tr>
+<tr><td>P8<span class="tag e">狼人</span></td><td>棄票</td><td>「山彥質疑風鈴」與「白帆冬陽動機」兩條線都缺乏實質證據，想再觀察一天。</td></tr>
+<tr><td>P9<span class="tag g">村民</span></td><td>棄票</td><td>全場均未鎖定對象，山彥質疑風鈴一事尚待風鈴回應，證據不足以支撐投票。</td></tr>
+</table></div>
+<div class="kv" style="margin-top:10px">| 對象 | 票數 |<br>|---|---|<br>| P6 | 1 |<br>| P2 | 1 |<br>| 棄票 | 7 |</p><p>**最高票平票（P2、P6 各 1 票）→ 進入 PK。**</div>
+</div>
+<h3>PK</h3>
+<details><summary>P6・風鈴（PK 發言）<span class="tag e">狼人</span></summary><div class="body"><p>我先講清楚一件事:我會是第一個發言,是上帝隨機決定的起始位,不是我自己選的。第一個發言的人本來就沒有前面任何逐字稿可以參考,只能靠自己把觀察方法講清楚——講得完整不是because我在演,而是because我沒有別人的發言可以偷懶帶過。這點冬陽跟林間都已經指出過,山彥那套「起手式太完整=可疑」的邏輯本身站不太住腳,是倒因為果。</p><p>反過來看,山彥今天的動作是:全場七個人都選擇「先觀察、不定票」,唯獨他一個人挑了隨機起始位的我,講得斬釘截鐵地放進觀察名單。如果他真的只是覺得我的方法論可疑,大可以像其他人一樣先觀望;他選擇在第一天資訊最薄的時候就精準定錨到我身上,這種急著把票往一個方向帶的節奏,才是我覺得該優先處理的訊號。</p><p>今天如果要在我們兩人之間選一個先出局,我會希望大家想清楚:淘汰的是「單純第一個發言、把話講完整的人」,還是「第一天就急著把大家的注意力鎖定到某個人身上的人」。</p></div></details>
+<details><summary>P2・山彥（PK 發言）<span class="tag g">預言家</span></summary><div class="body"><p>風鈴的解釋我聽完了，但他其實迴避了我原本問題的核心。我從頭到尾質疑的不是「你講得完整」這件事本身，而是「講得完整」跟「你自己說的內容」之間的落差——你發言一開頭講的是「我不會急著把票定死在誰身上」「先聽」「先觀察」，結論跟其他人一模一樣，但中間卻花了整段篇幅把一套完整的觀察方法論鋪陳出來，包括具體要留意「太急著帶風向」「明顯避重就輕」這種頗有針對性的描述。一個打算「先觀察、不定調」的人，通常不會在第一次發言就把篩選標準講得這麼具體、這麼像是已經想好要用在誰身上。</p><p>風鈴現在的反駁邏輯是「因為我是起始位所以講得完整很正常」，但這跟我的質疑點不在同一個層次上——起始位決定的是你有沒有東西可以參考，不代表你必須把觀察方法講得像一份已經準備好的清單。冬陽、林間說的「倒因為果」，反駁的是別人講的「完整=可疑」，但我要問的一直是「這麼早就準備好一套具體篩選標準，是不是本身就是一種準備」。</p><p>至於他說我「急著把票往一個方向帶」——我今天只投了一票，而且投的正是唯一一個沒有正面回應我質疑、選擇用「你的邏輯本身有問題」反過來質疑我動機的人。如果風鈴真的問心無愧，比起指控我節奏可疑，更直接的做法應該是回應我具體點出的那個落差，而不是把話題轉向我的投票行為本身。</p><p>今天如果兩人選一個，我會請大家想的是：誰在被直接質疑時選擇正面回答問題，誰選擇把矛頭轉向質疑者的動機。</p></div></details>
+<div class="panel"><div class="scroll"><table>
+<tr><th>投票者</th><th>投給</th></tr>
+<tr><td>P1<span class="tag g">獵人</span></td><td>P2<span class="tag g">預言家</span></td></tr>
+<tr><td>P3<span class="tag g">村民</span></td><td>P6<span class="tag e">狼人</span></td></tr>
+<tr><td>P4<span class="tag g">女巫</span></td><td>P6<span class="tag e">狼人</span></td></tr>
+<tr><td>P5<span class="tag g">村民</span></td><td>P6<span class="tag e">狼人</span></td></tr>
+<tr><td>P7<span class="tag e">狼人</span></td><td>P2<span class="tag g">預言家</span></td></tr>
+<tr><td>P8<span class="tag e">狼人</span></td><td>P2<span class="tag g">預言家</span></td></tr>
+<tr><td>P9<span class="tag g">村民</span></td><td>P6<span class="tag e">狼人</span></td></tr>
+</table></div>
+<div class="kv" style="margin-top:10px">PK 唱票：P6 得 4 票、P2 得 3 票 → P6・風鈴出局。</div>
+</div>
+<h2>第 2 天</h2>
+<details><summary>P3・白帆<span class="tag g">村民</span></summary><div class="body"><p>先把第一天的結果擺出來看一次:PK 淘汰的是風鈴,而昨晚死的是山彥——也就是唯一一個在第一天堅持指控風鈴、而且被風鈴反過來質疑動機的人。如果山彥只是普通村民,單純在第一天精準點名、又在 PK 發言裡守住自己的立場,狼人沒有特別理由要在第一晚就處理他;但如果他手上有比&quot;觀察方法論&quot;更硬的東西,而且那個東西剛好指向風鈴,狼人連夜動手滅口就完全說得通。這不是斷言,但這個死亡順序本身值得放在檯面上一起看。</p><p>換句話說,昨天投掉風鈴這件事,現在多了兩種讀法:一是好人陣營幸運先拔掉一隻狼,狼人晚上刀山彥純粹是報復或亂刀;二是風鈴其實是被誤殺的好人,而昨晚死的山彥才是真正握有關鍵資訊、讓狼人感到威脅的人——這兩種讀法會讓我們接下來的方向完全不一樣,我目前傾向後者多一點,因為狼人刀人通常有目的性,而山彥是當時場上唯一一個立場明確、又跟其他人衝突過的人。</p><p>我還沒有要投的對象,但今天我會特別注意:有沒有人急著把山彥的死亡導向&quot;純粹被報復&quot;&quot;隨機刀&quot;這種淡化解釋,而不去談風鈴可能被誤殺的可能性——如果有人一直想把話題從&quot;風鈴是不是被冤枉&quot;上帶開,那個閃避本身就是訊號。</p></div></details>
+<details><summary>P4・冬陽<span class="tag g">女巫</span></summary><div class="body"><p>白帆這個死亡順序的角度我覺得值得認真看：風鈴出局、山彥被刀，這兩件事放在一起確實比單獨看更有意思。但我想補一個白帆沒細講的點——如果山彥真的握有比「觀察方法論」更硬的東西，那個東西最可能的形式是什麼？昨天他點名風鈴的說法，從頭到尾都停留在「發言風格」層次，沒有一句話帶有「我查驗過」或任何具體到只有神職才會知道的資訊。這跟典型的「神職被刀滅口」模式不太一樣——通常會留下更明確的暗示，而不是純粹的邏輯質疑。</p><p>所以我目前的猜測反而是另一種可能：山彥昨天的姿態太硬、太篤定，把自己變成場上最顯眼的目標，狼人選他純粹是因為「這個人今天最積極在帶風向、留著會麻煩」，跟他手上有沒有硬資訊未必有關。這兩種解讀現在都站得住腳，我不會急著選邊，但我會留意接下來有沒有人開始暗示自己「有依據」卻講不清楚，那種半跳的姿態才是我要抓的東西。</p><p>今天我也還沒有要投的對象，想先看林間、青禾怎麼接這個話題。</p></div></details>
+<details><summary>P5・林間<span class="tag g">村民</span></summary><div class="body"><p>白帆跟冬陽的角度我都認同，死亡順序（先出局風鈴、再刀死山彥）確實值得放在一起看，但我想指出兩人論證裡都沒處理到的一個環節：如果山彥手上沒有「查驗過」這種硬資訊，純粹只是邏輯質疑加態度強硬就被刀，那狼人選擇在第一晚就處理一個「發言強硬但沒有實質威脅」的普通村民，風險報酬其實不太划算——第一晚正常更該藏，除非山彥的存在對狼隊來說緊急到不能等。所以我反而傾向：山彥被刀更可能是因為他昨天的方向「精準指向風鈴」這件事，剛好戳到了某些人不想被戳的地方，而不是單純的「態度強硬所以顯眼」。</p><p>如果我這個猜測成立，代表風鈴被誤殺出局的機率我會往上調一點，因為這樣一來，「山彥指控風鈴」跟「狼人連夜刀山彥」這兩件事就是同一條因果線，而不是兩件各自獨立的事。不過我也承認這只是猜測，還沒有能落地到具體某個人身上的證據。</p><p>今天我暫時也不指名投票對象，想先看青禾、湖心、雲杉、阿松會不會補上「山彥可能真的有依據」這條線的具體證據，或是反過來提出我沒想到的解讀。</p></div></details>
+<details><summary>P7・青禾<span class="tag e">狼人</span></summary><div class="body"><p>白帆、冬陽、林間三位把死亡順序拆得很細，但我想提醒一件事：我們現在完全是在猜山彥手上「有沒有硬資訊」，卻沒有人問過反方向的問題——如果山彥真的握有查驗結果之類的東西，他昨天在 PK 發言裡有大好機會直接甩出來自保，畢竟那時候他自己正被投出局的風險逼到牆角，卻仍然只講邏輯層面的「起手式太完整」。一個手上有硬牌、命懸一線的人，通常不會留著牌不打。</p><p>所以我反而比較站冬陽那個角度：山彥可能單純是因為第一天姿態最強硬、最積極把票往一個方向帶，讓狼人覺得他留著會持續主導節奏，才選他，跟他有沒有真憑實據未必是同一件事。如果我們把「風鈴被誤殺」當成既定結論去反推，可能會把接下來的推理方向鎖死在一條不一定正確的因果線上。</p><p>我今天也還沒有要投的對象，但會留意接下來有沒有人開始暗示自己「其實查得到什麼」，那種半跳姿態值得追問。</p></div></details>
+<details><summary>P8・湖心<span class="tag e">狼人</span></summary><div class="body"><p>白帆跟林間那條「死亡順序=因果線」的猜測我聽得懂,但冬陽跟青禾提的反方向問題我覺得更關鍵:如果山彥真的握有查驗結果,PK 發言那個時間點是他自保機會最大、風險最高的時刻,他卻完全沒有動用,還是停在邏輯層次跟人辯論動機。手上有硬牌卻不打,對一個命懸一線的人來說不太合理,除非他根本沒有牌可以打。</p><p>所以我目前比較傾向:昨天山彥出局純粹是因為他是全場態度最強硬、最主動定錨別人的人,狼人選他是為了拔掉一個会持續主導節奏的對手,不代表風鈴一定是被冤枉的。我不會把這個當成定論,但在有人真的拿出更具體的東西之前,我不想把推理方向鎖死在「風鈴被誤殺」這條線上。今天我還沒有要投的對象,想聽完雲杉跟阿松怎麼說。</p></div></details>
+<details><summary>P9・雲杉<span class="tag g">村民</span></summary><div class="body"><p>白帆到湖心這五位其實已經把「山彥有沒有硬資訊」這條線正反兩面都攤開了，我不打算再重複——冬陽、青禾、湖心那個「PK 時有牌不打不合理」的論證我認為比白帆、林間的「死亡因果線」更站得住腳，畢竟命懸一線時藏牌的成本太高。</p><p>我想補一個大家還沒提到的角度：與其糾結山彥死亡的「原因」，不如看今天這五位的**站隊分布**本身——目前白帆、林間站同一邊（風鈴可能被誤殺），冬陽、青禾、湖心站另一邊（山彥單純態度強硬被拔掉），五個人剛好二三分，而且雙方都還停留在「猜測動機」，沒有人从這個死亡本身反過來質疑「昨天投風鈴出局」這件事到底是不是狼人樂見的結果——如果昨天真的冤枉了風鈴，那狼人等於白撿一個好人陣營自相殘殺的成果，今晚再補刀一個強勢玩家，兩天內好人陣營就少了兩個發言最積極的人。這個「好人陣營發言量正在被系統性削弱」的角度，我覺得比繼續辯論山彥有沒有硬資訊更值得放進大家的觀察名單。</p><p>我今天還沒有要投的對象，想先聽阿松怎麼說，再看整輪七人裡誰真的往前推進了論證，誰只是在兩個既有陣營裡選邊站。</p></div></details>
+<details><summary>P1・阿松<span class="tag g">獵人</span></summary><div class="body"><p>白帆到雲杉六位已經把「山彥有沒有硬資訊」這條線正反兩面攤得很開了，我同意冬陽、青禾、湖心那個「PK 命懸一線卻不打牌」的論證比較站得住腳——山彥昨天真的沒有留一手看起來像查驗結果的東西。但我想從另一個角度切進來，跟雲杉的「發言量被系統性削弱」呼應但更具體一點：昨天 PK 投票是 4 票對 3 票，換句話說**有 4 個人在 PK 時把票投給風鈴**，等於是他們親手把風鈴送出局。今天這五位（白帆、冬陽、林間、青禾、湖心）裡，究竟誰當時投的是風鈴、誰投的是山彥，我目前手上的資訊還兜不起來，但這件事直接決定了他們今天講「風鈴可能被誤殺」是不是在替自己的判斷找台階下，還是真心懷疑自己昨天投錯了。</p><p>換句話說，我更想看的不是「山彥有沒有藏牌」，而是：昨天投風鈴出局的那四個人，今天面對「風鈴可能是被冤枉的好人」這個假設時，是坦然承認「我當時的判斷可能有問題」，還是迴避這件事、把焦點全部轉到山彥身上——因為如果風鈴真的是好人，那昨天那四票的理由本身就該被重新檢視，而不是只檢視山彥的死。</p><p>我今天也還沒有要投的對象，想先看這一輪剩下沒表態的人（如果之後上帝重新開一輪）會不會正面回答「你昨天投的是誰、現在怎麼看」這個問題，那比繼續猜山彥手上有沒有牌更能推進局面。</p></div></details>
+<div class="panel"><div class="scroll"><table>
+<tr><th>投票者</th><th>投給</th><th>理由</th></tr>
+<tr><td>P1<span class="tag g">獵人</span></td><td>棄票</td><td>提出的「昨天投風鈴的四人今天怎麼看」問題尚未有人正面回答，證據不足以支撐定票。</td></tr>
+<tr><td>P3<span class="tag g">村民</span></td><td>棄票</td><td>承認自己 PK 時投的正是風鈴，但今天讀完反方論證後認為當時判斷未必錯，也不足以再定另一人出局。</td></tr>
+<tr><td>P4<span class="tag g">女巫</span></td><td>棄票</td><td>正反兩面論證都攤開了，但沒有落地到具體行為的證據，想等「昨天投風鈴的人」被回答後再定。</td></tr>
+<tr><td>P5<span class="tag g">村民</span></td><td>棄票</td><td>證據對等，不想用票強化任一方猜測，等阿松那條線有人正面回答。</td></tr>
+<tr><td>P7<span class="tag e">狼人</span></td><td>棄票</td><td>整輪仍停在猜測層次，沒有具體可疑行為落地，現在投票只是選邊站。</td></tr>
+<tr><td>P8<span class="tag e">狼人</span></td><td>棄票</td><td>「昨天投風鈴的四人怎麼看」尚未釐清，不想貿然選邊定票。</td></tr>
+<tr><td>P9<span class="tag g">村民</span></td><td>棄票</td><td>承認自己是 PK 投風鈴的四票之一，但判斷未必因山彥死亡而反悔，全場仍無具體行為證據，繼續觀察。</td></tr>
+</table></div>
+<div class="kv" style="margin-top:10px">**全體 7 人一致棄票，無人得票。**</p><p>**裁決：無人出局，直接進入第 3 夜。**</div>
+</div>
+<footer>此為終局公開版。勝負已定，底牌已於終局公布，故一併列出；夜間行動仍不收錄。</footer></div>

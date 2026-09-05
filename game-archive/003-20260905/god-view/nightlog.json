@@ -1,0 +1,85 @@
+{
+  "nights": [
+    {
+      "night": 1,
+      "wolf_target": "P2",
+      "wolf_round": 2,
+      "seer_target": "P5",
+      "seer_result": "狼人陣營",
+      "witch_action": "antidote",
+      "witch_save_target": "P2",
+      "witch_poison_target": null,
+      "deaths": [],
+      "hunter_triggered": false
+    },
+    {
+      "night": 2,
+      "wolf_target": "P3",
+      "wolf_round": 1,
+      "seer_target": "P6",
+      "seer_result": "好人陣營",
+      "witch_action": "none",
+      "witch_save_target": null,
+      "witch_poison_target": null,
+      "deaths": [
+        "P3"
+      ],
+      "hunter_triggered": false
+    },
+    {
+      "night": 3,
+      "wolf_target": "P2",
+      "wolf_round": "random_after_2_rounds_no_majority",
+      "seer_target": null,
+      "seer_result": null,
+      "seer_note": "seer already dead, phase skipped silently",
+      "witch_action": "none",
+      "witch_save_target": null,
+      "witch_poison_target": null,
+      "deaths": [
+        "P2",
+        "P6"
+      ],
+      "hunter_triggered": true,
+      "hunter_shot_target": "P6"
+    }
+  ],
+  "day_votes": [
+    {
+      "day": 1,
+      "votes": {
+        "P1": "P5",
+        "P2": "P5",
+        "P3": "P5",
+        "P4": "P5",
+        "P5": "P3",
+        "P6": "P5",
+        "P7": "棄票",
+        "P8": "P3",
+        "P9": "P5"
+      },
+      "tally": {
+        "P5": 6,
+        "P3": 2,
+        "棄票": 1
+      },
+      "eliminated": "P5",
+      "hunter_triggered": false
+    },
+    {
+      "day": 2,
+      "votes": {
+        "P1": "棄票",
+        "P2": "棄票",
+        "P4": "棄票",
+        "P6": "棄票",
+        "P7": "棄票",
+        "P8": "棄票",
+        "P9": "棄票"
+      },
+      "tally": {},
+      "eliminated": null,
+      "hunter_triggered": false
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "antidote_used": true,
+  "poison_used": false,
+  "hunter_fired": true,
+  "alive": [
+    "P1",
+    "P4",
+    "P7",
+    "P8",
+    "P9"
+  ],
+  "dead": [
+    "P5",
+    "P3",
+    "P2",
+    "P6"
+  ],
+  "day": 3,
+  "phase": "game_over_announced_mvp_done",
+  "result": {
+    "winner": "狼人",
+    "reason": "屠邊（神職全滅）",
+    "day": 3
+  }
+}
