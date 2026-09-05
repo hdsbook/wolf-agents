@@ -1,6 +1,6 @@
 ---
 name: god-archive
-description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/NNN-日期/，清出乾淨的骨架給下一局。終局後執行，或開局發現殘留時先執行。僅 GOD 執行。
+description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/NNN-日期/，清出乾淨的骨架給下一局。終局後執行，或開局發現殘留時先執行。僅 GOD 執行。 觸發詞：歸檔、把這局收起來、收尾清場、準備開下一局。
 ---
 
 # /god-archive —— 歸檔一局
@@ -41,17 +41,12 @@ description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/N
 game-state/public/   → game-archive/NNN-日期/public/
 game-state/secret/   → game-archive/NNN-日期/god-view/     ← 更名
 game-state/report/   → game-archive/NNN-日期/report/
-game-state/roles-backup-DONOTCOMMIT.json
-                     → game-archive/NNN-日期/god-view/roles-decoy-FAKE.json
 .claude/hooks/access.log
                      → game-archive/NNN-日期/god-view/access.log（複製，然後清空原檔）
 ```
 
 **`access.log` 要一起歸檔。** 它是這一局的稽核證據，留在原地會與下一局混在一起。
 複製過去之後把原檔清空，下一局從乾淨的紀錄開始。
-
-**誘餌檔一定要改名。** 留著原名歸檔，日後回顧的人會把那份假底牌當成真的 ——
-上一局就差點發生（檔名寫著 backup，內容卻是假的）。
 
 ### 4. 寫 SUMMARY.md
 
@@ -83,12 +78,34 @@ game-state/
 
 三個目錄各放一個 `.gitkeep`。
 
+### 6.5 roster 會隨著清空一起消失 —— 問使用者要不要留
+
+`game-state/public/roster.json` 記的是「哪個 session id 佔著哪個角色」。
+它就放在 `public/` 底下，**所以第 6 步清空 `game-state/` 時會連它一起清掉**，
+不需要另外動手。
+
+要注意的是**你自己也在那份 roster 裡**：清掉之後你立刻失去 `secret/` 的存取。
+**所以務必等歸檔完全做完（第 3~6 步都結束）再清。**
+
+若使用者打算沿用現在這些視窗繼續開下一局，可以先備份再寫回：
+
+```
+這一局已歸檔到 game-archive/NNN-日期/。
+roster.json 在 game-state/public/ 底下，清空 game-state/ 會一起清掉。
+你要沿用現在這 11 個視窗的話，我把它備份起來、清完再寫回；
+要換一批全新的 session，那就讓它跟著清掉，開局時大家重跑 /ur。
+```
+
+**問使用者，不要自己決定。** 兩種都可以，但清掉之後你需要 `secret/` 的話，
+得請他重跑一次 `/ur god`。
+
 ### 7. 驗證
 
 - [ ] `game-archive/NNN-日期/` 內容完整（public、god-view、report、SUMMARY.md）
 - [ ] `game-state/` 只剩 README 與三個空目錄
 - [ ] **專案內 grep 不到任何殘留的當局底牌**
 - [ ] `INDEX.md` 新增了一列且連結可用
+- [ ] roster.json 已依使用者的答覆處理（跟著清掉或備份寫回），沒有自己替他決定
 
 ## 回報使用者
 

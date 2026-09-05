@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+
+# EnterWorktree 建立的隔離工作區，屬於本機開發過程，不進版控
+.claude/worktrees/
+
+# JetBrains IDE 設定，屬於本機環境
+.idea/

@@ -1,7 +1,12 @@
 """狼人殺・受保護路徑政策（hook 共用）
 
-這個模組定義「誰能碰什麼」，兩支 hook 腳本都從這裡取規則。
-規則集中在一處，避免註冊與攔截兩邊對「保護範圍」的認知漂移。
+這個模組定義「誰能碰什麼」，攔截 hook 從這裡取規則。
+
+**角色登記不在這裡。** roster 由 `/ur` skill 的
+`.claude/skills/ur/scripts/claim_role.py` 維護，寫在 `game-state/public/roster.json`。
+那支腳本刻意**不 import 這個模組** —— 它由玩家 session 執行，而讀取
+`.claude/hooks/` 本身受 CONFIG 規則保護，import 會被自己擋下。
+代價是角色代號的定義在兩處各有一份，改動時兩邊都要改。
 """
 import os
 import re
@@ -10,9 +15,13 @@ import re
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 HOOK_DIR = os.path.join(PROJECT_DIR, ".claude", "hooks")
-ROSTER = os.path.join(HOOK_DIR, "roster.json")
 ACCESS_LOG = os.path.join(HOOK_DIR, "access.log")
-CONFLICT_LOG = os.path.join(HOOK_DIR, "roster-conflicts.log")
+
+# roster 放在公開區 —— 玩家 session 要能自己寫入才登記得了。
+# 這也表示**任何 session 都能改它**，見 claim_role.py 的說明。
+PUBLIC_DIR = os.path.join(PROJECT_DIR, "game-state", "public")
+ROSTER = os.path.join(PUBLIC_DIR, "roster.json")
+CONFLICT_LOG = os.path.join(PUBLIC_DIR, "roster-conflicts.log")
 
 VALID_ROLES = ["god", "reporter", "maintainer"] + ["p%d" % i for i in range(1, 10)]
 
@@ -36,6 +45,7 @@ RULES = [
     ("MEMORY",     ".claude/agent-memory",           ("god", "reporter", "maintainer")),
     ("REF_GOD",    ".claude/agent-reference/god",    ("god", "maintainer")),
     ("REF_REP",    ".claude/agent-reference/reporter", ("god", "reporter", "maintainer")),
+    ("REF_SHARED", ".claude/agent-reference/shared", ("god", "reporter", "maintainer")),
     ("CONFIG",     ".claude/settings",               ("god", "maintainer")),
     ("CONFIG",     ".claude/hooks",                  ("god", "maintainer")),
 ]
@@ -65,6 +75,7 @@ PROTECTED_ABS = [
     ("MEMORY",     _P + "/.claude/agent-memory",          ("god", "reporter", "maintainer")),
     ("REF_GOD",    _P + "/.claude/agent-reference/god",   ("god", "maintainer")),
     ("REF_REP",    _P + "/.claude/agent-reference/reporter", ("god", "reporter", "maintainer")),
+    ("REF_SHARED", _P + "/.claude/agent-reference/shared", ("god", "reporter", "maintainer")),
     ("CONFIG",     _P + "/.claude/settings",              ("god", "maintainer")),
     ("CONFIG",     _P + "/.claude/hooks",                 ("god", "maintainer")),
 ]
@@ -173,6 +184,7 @@ DENY_MESSAGE = {
     "MEMORY": ".claude/agent-memory/ 是跨局記憶，玩家沒有跨局記憶（公平性要求）。",
     "REF_GOD": ".claude/agent-reference/god/ 屬於主持人，不屬於你。",
     "REF_REP": ".claude/agent-reference/reporter/ 屬於 reporter，不屬於你。",
+    "REF_SHARED": ".claude/agent-reference/shared/ 是主持方的環境筆記，不屬於你。你要的規則在 .claude/rules/，你的情境索引在 .claude/agent-reference/player/。",
     "CONFIG": ".claude/settings.json 與 .claude/hooks/ 是存取控制本身，只有 god 能改。",
     "SECRET_RECURSIVE": "這個掃描範圍會遞迴進入 game-state/secret/。請把範圍縮到 game-state/public/。",
     "TRANSCRIPT_RECURSIVE": "這個掃描範圍會遞迴進入 session 對話紀錄目錄。",
@@ -181,5 +193,6 @@ DENY_MESSAGE = {
     "MEMORY_RECURSIVE": "這個掃描範圍會遞迴進入 agent-memory/。請把範圍縮小。",
     "REF_GOD_RECURSIVE": "這個掃描範圍會遞迴進入主持人的參考資料。請把範圍縮小。",
     "REF_REP_RECURSIVE": "這個掃描範圍會遞迴進入 reporter 的參考資料。請把範圍縮小。",
+    "REF_SHARED_RECURSIVE": "這個掃描範圍會遞迴進入主持方的環境筆記。請把範圍縮小。",
     "CONFIG_RECURSIVE": "這個掃描範圍會遞迴進入 .claude/ 的受保護區。請把範圍縮到 .claude/rules/。",
 }

@@ -17,22 +17,24 @@ description: 狼人殺・上帝對玩家發訊的唯一管道。從固定模板�
 
 ## 可用的 action
 
-模板全文在 `.claude/agent-reference/god/message-templates.md`。
+模板全文在 `.claude/skills/god-dispatch/references/message-templates.md`。
 
 | action | 用途 | 發送方式 |
 |---|---|---|
-| `ping` | 點名通訊測試 | 並行 |
-| `deal` | 發牌 + 徵集自介 | 並行 |
+| `ping` | 點名通訊測試 + 指派暱稱 | 並行（9 玩家） |
+| `ping_reporter` | 點名通訊測試（無暱稱） | 單點 |
+| `deal` | 發牌 + 指派自介落檔與公平競賽承諾 | 並行 |
 | `roster` | 名冊廣播 | 並行 |
-| `pledge` | 公平競賽承諾 | 並行 |
-| `night_wolf` | 狼人刀人 | 並行（狼隊） |
-| `night_wolf_round2` | 匿名彙整第二輪 | 並行（狼隊） |
+| `night_wolf_open` | 狼人睜眼＋告知隊長＋收暗號 | 並行（狼隊） |
+| `night_wolf_relay` | 隊友暗號轉給隊長，請他拍板 | 單點（隊長） |
+| `night_wolf_plan` | 隊長的決定轉達其他狼 | 並行（非隊長） |
 | `night_seer` | 預言家查驗 | 單點 |
 | `night_seer_result` | 查驗結果 | 單點 |
 | `night_witch` | 女巫用藥 | 單點 |
 | `hunter_shot` | 獵人開槍 | 單點 |
 | `dawn` | 天亮公告 | 並行 |
-| `ask_speak` | 指派發言 | **序列** |
+| `ask_speak` | 指派發言 | **依序，一位一位** |
+| `ask_claim` | 補問漏填的身份宣告 | 單點 |
 | `ask_vote` | 收票 | 並行 |
 | `tally` | 唱票公告 | 並行 |
 | `eliminated` | 通知出局者 | 單點 |
@@ -41,7 +43,7 @@ description: 狼人殺・上帝對玩家發訊的唯一管道。從固定模板�
 
 ## 執行步驟
 
-1. 從 `message-templates.md` 取出該 action 的模板
+1. 從 `references/message-templates.md` 取出該 action 的模板
 2. 填入插槽（`{{...}}`）
 3. **渲染後跑四項檢查**（見下）
 4. 送出

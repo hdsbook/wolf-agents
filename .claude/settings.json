@@ -1,11 +1,11 @@
 {
   "hooks": {
-    "UserPromptSubmit": [
+    "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "python \"D:/Projects/claude-poc/wolf/.claude/hooks/register_role.py\"",
+            "command": "python \"D:/Projects/claude-poc/wolf/.claude/hooks/inject_session_id.py\"",
             "timeout": 10
           }
         ]
@@ -23,5 +23,11 @@
         ]
       }
     ]
-  }
+  },
+  "permissions": {
+    "allow": [
+      "Edit(.claude/hooks/**)"
+    ]
+  },
+  "worktree": { "bgIsolation": "none" }
 }

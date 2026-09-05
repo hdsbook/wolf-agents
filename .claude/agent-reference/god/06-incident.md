@@ -14,8 +14,8 @@
 
 | 誰重啟 | 做什麼 |
 |---|---|
-| 玩家 | 請它重跑 `/join-as p<n>`，然後補發它的身份牌、識別碼、**以及它自己的行動歷史**（說過什麼、投給誰、被誰指控） |
-| reporter | 請它重跑 `/join-as reporter`（**必要** —— session 換 id 後 roster 不認得它，會讀不到 `secret/`），再跑一次 `/reporter-verify` |
+| 玩家 | 請它重跑 `/ur p<n>`，然後補發它的身份牌、識別碼、**以及它自己的行動歷史**（說過什麼、投給誰、被誰指控） |
+| reporter | 請它重跑 `/ur reporter`（**必要** —— session 換 id 後 roster 不認得它，會讀不到 `secret/`），再跑一次 `/reporter-verify` |
 | 你自己 | 走 `/god-resume` |
 
 **只還原它原本就持有的資訊，不給任何額外優勢。**
@@ -27,7 +27,7 @@
 ## 玩家沒有回應
 
 1. 重發一次澄清訊息
-2. 仍無回應 → 套用 `workflow-arbitration.md` 的逾時預設
+2. 仍無回應 → 套用 `05-arbitration.md` 的逾時預設
 3. **在公開紀錄中註明**該玩家本階段逾時 —— 這是其他人的推理素材
 4. 連續兩階段無回應 → 向使用者回報，可能是 session 掛了
 
@@ -99,12 +99,16 @@
 
 ## roster 對不上（有人讀不到他該讀的東西）
 
-`.claude/hooks/roster.json` 記的是 **session id**，而 session 重啟會換 id。
+`game-state/public/roster.json` 記的是 **session id**，而 session 重啟會換 id。
 
-- god 或 reporter 讀不到 `secret/` → 請使用者重跑 `/join-as <角色>`
-- 重跑後仍不行 → 該角色的舊 id 還佔著位置（**先到先得**）。
-  請使用者直接編輯 `roster.json`，把該角色改成新的 id。
-  `roster-conflicts.log` 裡有被拒絕的那次認領，可以對照。
+- god 或 reporter 讀不到 `secret/` → 請使用者重跑 `/ur <角色>`。
+  認領採**後到覆寫**，舊 id 佔著位置也會被蓋掉，不需要旗標，重跑一次就該恢復。
+- 重跑後仍不行 → 不是被佔用的問題，往別的方向查。最常見的是**那個 session 跑了
+  `/ur` 但沒把登記那一步跑完** —— 登記是 skill 裡的一個腳本呼叫，不是自動發生的。
+  直接看 `game-state/public/roster.json` 裡那個角色的值對不對得上，
+  `roster-conflicts.log` 記著每一次接管，可以對照。
+- **整份 roster 不見了** → 歸檔或中止會連它一起清掉（它就在 `game-state/public/` 底下）。
+  此時存取控制一律放行，要請所有 session 重跑一次 `/ur`。
 
 ---
 

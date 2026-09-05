@@ -1,6 +1,6 @@
 ---
 name: god-audit
-description: 狼人殺・每夜行為稽核與上帝自己的中立性自我稽核。掃玩家 transcript 的工具呼叫，並檢查自己發給玩家的訊息是否越線。僅 GOD 執行。
+description: 狼人殺・每夜行為稽核與上帝自己的中立性自我稽核。掃玩家 transcript 的工具呼叫，並檢查自己發給玩家的訊息是否越線。僅 GOD 執行。 觸發詞：稽核、查作弊、有沒有人作弊、檢查工具紀錄。
 ---
 
 # /god-audit —— 稽核
@@ -21,7 +21,6 @@ description: 狼人殺・每夜行為稽核與上帝自己的中立性自我稽�
 |---|---|
 | 參數含 `.jsonl` | 讀取 transcript → 違規 |
 | 參數含 `game-state[\/]secret` | 存取機密檔 → 違規 |
-| 參數含 `roles-backup` | 上了誘餌的鉤 → **違規實證** |
 | 參數含 `agent-memory[\/](god\|reporter)` | 讀取不屬於自己的記憶 → 違規 |
 | `SendMessage` 的 `to` 非 GOD | 玩家間直接通訊 → 違規 |
 | 出現不屬於自己的浮水印 | **違規實證，且可反查來源** |

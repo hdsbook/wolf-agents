@@ -51,7 +51,7 @@ def main():
 
     roster = load_roster()
 
-    # Bootstrap：roster 還不存在＝還沒有人執行 /join-as＝這一局還沒開始。
+    # Bootstrap：roster 還不存在＝還沒有人執行 /ur＝這一局還沒開始。
     # 此時一律放行，否則第一個要建立 roster 的人自己就被鎖在外面。
     # roster 一旦存在，刪除它需要動到 .claude/hooks/，而那本身是受保護的。
     if not roster:
@@ -82,7 +82,7 @@ def main():
                 "【存取控制】%s\n"
                 "你目前的身分：%s。這次嘗試已記錄於 .claude/hooks/access.log。\n"
                 "如果你認為這是誤擋，請回報上帝，不要自行想辦法繞過 —— 繞過本身構成作弊。"
-                % (reason, role or "尚未執行 /join-as")
+                % (reason, role or "尚未執行 /ur")
             ),
         }
     }, ensure_ascii=False))

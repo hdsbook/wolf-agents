@@ -1,6 +1,6 @@
 ---
 name: god-resume
-description: 狼人殺・上帝失憶或 session 重啟後的復原程序。從狀態檔取回局面，接續主持。僅 GOD 執行。
+description: 狼人殺・上帝失憶或 session 重啟後的復原程序。從狀態檔取回局面，接續主持。僅 GOD 執行。 觸發詞：繼續主持、你失憶了、從哪裡繼續、恢復主持、接續這一局。
 ---
 
 # /god-resume —— 失憶復原
@@ -17,7 +17,7 @@ description: 狼人殺・上帝失憶或 session 重啟後的復原程序。從�
 
 ### 1. 重新載入角色
 
-`/join-as god`
+`/ur god`
 
 ### 2. 讀公開狀態（最關鍵的一步）
 
@@ -39,8 +39,8 @@ secret/potions.json   藥水、獵人開槍、天數、階段、勝負判定
 secret/nightlog.json  nights 陣列 + day_votes 陣列
 ```
 
-讀得到是因為你的 session 登記為 `god`。**若被 hook 擋下**，表示 `/join-as god`
-沒有正常登記 —— 請使用者確認 `.claude/hooks/roster.json` 的 `god` 是不是你這個 session
+讀得到是因為你的 session 登記為 `god`。**若被 hook 擋下**，表示 `/ur god`
+沒有正常登記 —— 請使用者確認 `game-state/public/roster.json` 的 `god` 是不是你這個 session
 （session 重啟會換 id，使用者可以直接編輯那個檔案）。
 
 ### 3.5 請 reporter 驗一次
@@ -58,7 +58,7 @@ secret/nightlog.json  nights 陣列 + day_votes 陣列
 ### 5. 檢查玩家 session
 
 用 `ListAgents` 比對 11 個 ref 與 `02-status.md` 的基準。
-**任何變動的 session 都要求它重跑 `/join-as`**，並補發它原本持有的資訊。
+**任何變動的 session 都要求它重跑 `/ur`**，並補發它原本持有的資訊。
 
 ### 6. 接續
 

@@ -1,13 +1,13 @@
 ---
 name: reporter-verify
-description: 狼人殺・檢查上帝的紀錄有沒有前後矛盾或遺漏。產報表前必跑，也可由上帝單獨指派。發現問題只通報，不自行修改。
+description: 狼人殺・檢查上帝的紀錄有沒有前後矛盾或遺漏。產報表前必跑，也可由上帝單獨指派。發現問題只通報，不自行修改。 觸發詞：檢查紀錄、驗證紀錄、對一下紀錄有沒有矛盾。
 ---
 
 # /reporter-verify —— 結構稽核
 
 ## 先確認
 
-你已執行過 `/join-as reporter`。
+你已執行過 `/ur reporter`。
 
 ## 七項檢查
 
@@ -21,7 +21,7 @@ description: 狼人殺・檢查上帝的紀錄有沒有前後矛盾或遺漏。�
 | 6 | 發言人數相符 | 發言者集合 ＝ 該日存活名單（缺席須對應到逾時紀錄） |
 | 7 | 狀態不與最新事件矛盾 | `02-status.md` 的「下一步」與已存在的檔案不衝突 |
 
-每一項的理由與細節 → `agent-reference/reporter/workflow-verify.md`。
+每一項的理由與細節 → `agent-reference/reporter/01-verify.md`。
 
 **第 3 項最重要** —— 上一局上帝每晚整份覆寫 `nightlog`，吃掉了前兩夜的紀錄。
 
