@@ -29,6 +29,10 @@ WOLF = "狼人"
 PHASE_LABEL = {
     "setup": "開局", "night": "夜晚", "day": "白天",
     "vote": "投票", "endgame": "終局",
+    # 主持端實際還用了這幾個代碼（宣告的五個沒有涵蓋全場）。
+    # 補進來，但保留 phase_label 的未知標記 —— 那個標記正是它們被發現的原因。
+    "dawn": "天亮", "speech": "發言輪", "pk": "PK",
+    "game_over": "終局",
 }
 
 
@@ -40,7 +44,13 @@ def phase_label(p):
     p = (p or "").strip()
     if not p:
         return "—"
-    return PHASE_LABEL.get(p) or ("%s（未知代碼）" % p)
+    if p in PHASE_LABEL:
+        return PHASE_LABEL[p]
+    # 已經是中文散文的階段（「開局完成・第一夜前」）本來就讀得懂，原樣輸出。
+    # 未知標記的用途是攔住會把英文代碼印進中文報表的值（R18），不是攔中文。
+    if any(ord(c) > 0x2E80 for c in p):
+        return p
+    return "%s（未知代碼）" % p
 
 # 身份宣告 —— 玩家在發言最後一行自己填的 `【宣告】<值>`，上帝原樣搬進逐字稿標題。
 # 這是封閉列舉：不在表內的值一律當成沒填（靜默降級），絕不猜測玩家的意思。
@@ -166,20 +176,44 @@ def collect_claims(pub):
     return claims
 
 
+def parse_reasons(md):
+    """從「## 投票理由」段落取 {投票者: 理由原文}。
+
+    上帝寫過兩種版面：理由與票型同表（三欄），以及票型表只有兩欄、
+    理由另立一節（每則以 `**P2・青禾 → P5**` 起頭）。後者若不解析，
+    票型表會因為欄數不足而整段被丟掉 —— 連同唱票結果一起靜默消失。
+    """
+    m = re.search(r"##\s*投票理由[^\n]*\n(.*?)(?=\n##|\Z)", md, re.S)
+    if not m:
+        return {}
+    out = {}
+    for blk in re.split(r"\n(?=\*\*\s*P[1-9])", m.group(1)):
+        head = re.match(r"\*\*\s*(P[1-9])[^*]*\*\*\s*\n(.*)", blk.strip(), re.S)
+        if head:
+            out[head.group(1)] = head.group(2).strip()
+    return out
+
+
 def parse_votes(md):
-    """從 04-votes-dayN.md 的票型表取 [(投票者, 投給, 理由)]。"""
+    """從 04-votes-dayN.md 的票型表取 [(投票者, 投給, 理由)]。
+
+    票型表可能是兩欄（投票者｜投給）或三欄（多一欄理由）。兩欄時
+    理由去「## 投票理由」段落取 —— 用欄數當門檻會讓整張表消失。
+    """
+    reasons = parse_reasons(md)
     out = []
     for line in md.splitlines():
         if not line.startswith("|"):
             continue
         cells = [c.strip() for c in line.strip("|").split("|")]
-        if len(cells) < 3:
+        if len(cells) < 2:
             continue
         m = re.match(r"(P[1-9])", cells[0])
         if not m:
             continue
         tgt = re.search(r"(P[1-9])", cells[1])
-        out.append((m.group(1), tgt.group(1) if tgt else "棄票", cells[2]))
+        reason = cells[2] if len(cells) >= 3 and cells[2] else reasons.get(m.group(1), "")
+        out.append((m.group(1), tgt.group(1) if tgt else "棄票", reason))
     return out
 
 
@@ -445,9 +479,13 @@ def night_panel(nights):
                 txt = " → ".join(sc) if sc else "無（無其他存活狼人）"
             else:
                 txt = str(sc) or "未提交"
+            if n.get("succession_default"):
+                txt += "（隊長未提交，由上帝依座位號補齊）"
             out.append('<div class="kv">接班順位 %s</div>' % esc(txt))
-        da_key = "day_assignments" if "day_assignments" in n else (
-            "day_roles" if "day_roles" in n else None)
+        # 第三種拼法：assignments。鍵名每一局都可能換，一律相容 ——
+        # 只認一種的代價是整行靜默消失，而腳本不會報錯。
+        da_key = next((k for k in ("day_assignments", "day_roles", "assignments")
+                       if k in n), None)
         if da_key:
             da = n.get(da_key)
             if isinstance(da, dict) and da:
@@ -468,7 +506,11 @@ def night_panel(nights):
                           esc(se.get("result") or "—")))
         wi = n.get("witch") or {}
         if wi.get("action"):
-            label = {"antidote": "解藥", "poison": "毒藥"}.get(wi["action"], wi["action"])
+            # "none"／"skip" 代表不用藥。沒有這一行的話，未落在對照表的值會被
+            # 原樣印進 HTML，畫面上出現「使用 none」這種不是中文的字樣。
+            label = {"antidote": "解藥", "poison": "毒藥",
+                     "none": "不用藥", "skip": "不用藥",
+                     "no_action": "不用藥"}.get(wi["action"], wi["action"])
             who = esc(" %s " % (wi.get("actor") or wi.get("by"))
                       if (wi.get("actor") or wi.get("by")) else " ")
             # target 可能是 null（不用藥的那一夜）。用 .get(k, 預設) 取不到預設，
@@ -481,8 +523,9 @@ def night_panel(nights):
                            % (who, esc(label), esc(tgt or "—")))
         # 開槍同樣用鍵的有無當閘門：null 代表「這一夜結算過，沒有觸發開槍」，
         # 那是一項真實的紀錄，不是「這件事不存在」。
-        if "hunter_shot" in n:
-            hs = n.get("hunter_shot")
+        hs_key = next((k for k in ("hunter_shot", "hunter") if k in n), None)
+        if hs_key:
+            hs = n.get(hs_key)
             if isinstance(hs, dict):
                 hs = "%s → %s" % (hs.get("actor") or hs.get("by") or "?",
                                   hs.get("target") or "—")
@@ -510,8 +553,91 @@ def public_nights(nights):
     return '<div class="panel">%s</div>' % "\n".join(out)
 
 
+def parse_timeline(text):
+    """把 01-timeline.md 切成 [(標題, [條目, ...]), ...]。
+
+    標題認 '## ' 與 '# ' 兩種層級（紀錄端的寫法會演化，見 R7/R8/R14）；
+    條目認 '- ' 與 '* '。整份是公開檔原文，渲染時一律包 quoted()。
+
+    第三種寫法是**表格**（| 天數 | 階段 | 事件 |）——只認清單的話整個時間軸會
+    靜默消失（同 R19：那一塊不是空的，是根本不存在，逐塊確認也看不見它缺席）。
+    表格以第一欄分組，其餘欄位以「—— 」串成條目。
+    """
+    if not text:
+        return []
+    out = []
+    cur = None
+    groups = {}
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        if s.startswith("|"):
+            cells = [c.strip() for c in s.strip("|").split("|")]
+            # 表頭與分隔列不是事件。分隔列全是 --- 之類的符號。
+            if len(cells) < 2 or all(re.fullmatch(r"[-: ]*", c) for c in cells):
+                continue
+            if cells[0] in ("天數", "時間", "階段"):
+                continue
+            key = cells[0]
+            if key not in groups:
+                groups[key] = (key, [])
+                out.append(groups[key])
+            groups[key][1].append("　—— ".join(c for c in cells[1:] if c))
+            continue
+        m = re.match(r"^#{1,3}\s+(.*)$", s)
+        if m:
+            title = m.group(1).strip()
+            # 檔案自己的大標（「時間軸」）不當成一個階段。
+            if title in ("時間軸", "時間線"):
+                cur = None
+                continue
+            cur = (title, [])
+            out.append(cur)
+            continue
+        m = re.match(r"^[-*]\s+(.*)$", s)
+        if m:
+            # 第四種寫法：只有檔案大標，條目直接掛在底下，沒有任何階段小標。
+            # 沒有這個預設分組的話，整份時間軸會靜默消失（同 R21）。
+            if cur is None:
+                cur = ("紀錄", [])
+                out.append(cur)
+            cur[1].append(m.group(1).strip())
+    return [(t, items) for t, items in out if items]
+
+
+def timeline_panel(entries):
+    out = []
+    for title, items in entries:
+        out.append('<div class="kv"><b>%s</b></div>' % quoted(title))
+        out.append("<ul>%s</ul>"
+                   % "".join("<li>%s</li>" % quoted(i) for i in items))
+    return '<div class="panel">%s</div>' % "\n".join(out)
+
+
+def collect_intros(pub, seats):
+    """讀 intro-inbox/ 的九份自介。回傳 [(座位, 內文), ...]，依座位號排序。
+
+    每檔的第一行是 '# Pn・暱稱' 標題，其餘為內文。缺檔就跳過 ——
+    自介是玩家自己落檔的，沒落檔是合法狀態，不是資料損壞（R15：缺資料省略，不填問號）。
+    """
+    d = os.path.join(pub, "intro-inbox")
+    if not os.path.isdir(d):
+        return []
+    out = []
+    for seat in seats:
+        text = read(os.path.join(d, "%s.md" % seat))
+        if not text:
+            continue
+        lines = [l.rstrip() for l in text.splitlines()]
+        body = "\n".join(l for l in lines if l.strip() and not l.startswith("#"))
+        if body.strip():
+            out.append((seat, body.strip()))
+    return out
+
+
 def build(game_dir, spoiler, roles, alive, dead_reason, seats, day, phase, nights,
-          result=None):
+          result=None, potions=None):
     # result 有值 = 勝負已定。此時底牌本來就已公開，公開版也顯示身份。
     # 夜間行動與死因不在此列 —— 那是夜間原始資料，終局後仍不進公開版。
     show_roles = bool(spoiler or result)
@@ -537,9 +663,34 @@ def build(game_dir, spoiler, roles, alive, dead_reason, seats, day, phase, night
         wolves = [s for s in seats if roles.get(s) == WOLF]
         wa = [s for s in wolves if s in alive]
         h.append('<div class="chip">狼 <b>%d</b> / %d 存活</div>' % (len(wa), len(wolves)))
+    # 藥水與開槍狀態只進劇透版（02-render.md 的版面規格）。
+    # 用「鍵在不在」決定顯示，不用「值真不真」—— False 是有意義的值（尚未使用），
+    # 若照真假寫，整排狀態會在最該顯示的開局階段整個消失（L27／R12）。
+    if spoiler and isinstance(potions, dict):
+        # 獵人開槍的鍵名紀錄端有兩種拼法（hunter_fired / hunter_shot_used），
+        # 兩種都認 —— 只認一種時那一格會靜默消失（R14／R17）。
+        for keys, label in ((("antidote_used",), "解藥"),
+                            (("poison_used",), "毒藥"),
+                            (("hunter_fired", "hunter_shot_used"), "獵人開槍")):
+            key = next((k for k in keys if k in potions), None)
+            if key:
+                h.append('<div class="chip">%s <b>%s</b></div>'
+                         % (esc(label), "已使用" if potions[key] else "未使用"))
     h.append("</div>")
     h.append("<h2>座位</h2>")
     h.append(seat_grid(seats, alive, dead_reason, roles, spoiler, show_roles, claims))
+    tl = parse_timeline(read(os.path.join(pub, "01-timeline.md")))
+    if tl:
+        h.append("<h2>時間軸</h2>")
+        h.append(timeline_panel(tl))
+    intros = collect_intros(pub, seats)
+    if intros:
+        h.append("<h2>自我介紹</h2>")
+        for seat, body in intros:
+            tag = role_tag(roles[seat]) if (show_roles and roles.get(seat)) else ""
+            h.append("<details><summary>%s・%s%s</summary>"
+                     '<div class="body"><p>%s</p></div></details>'
+                     % (esc(seat), quoted(seats.get(seat, "")), tag, quoted(body)))
     if nights:
         if spoiler:
             h.append("<h2>夜間行動</h2>")
@@ -673,7 +824,7 @@ def main():
     def write_spoiler():
         # 防劇透掃描只作用於公開版，劇透版本來就不掃 —— 這裡沒有漏掉步驟。
         doc = build(game_dir, True, roles, alive, dead_reason, seats, day, phase, nights,
-                    result)
+                    result, potions)
         path = os.path.join(sec, "report-spoiler.html")
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
@@ -689,7 +840,7 @@ def main():
         return 0
 
     pub_doc = build(game_dir, False, roles, alive, dead_reason, seats, day, phase, nights,
-                    result)
+                    result, potions)
     if result:
         # 終局揭底是刻意的，此時掃描必然整片命中，跳過它。
         hits = []
