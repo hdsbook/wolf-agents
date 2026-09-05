@@ -1,0 +1,5 @@
+# 執行期產生的檔案，不進版控
+roster.json
+access.log
+roster-conflicts.log
+__pycache__/

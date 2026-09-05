@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"D:/Projects/claude-poc/wolf/.claude/hooks/register_role.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read|Grep|Glob|Bash|Edit|Write|NotebookEdit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"D:/Projects/claude-poc/wolf/.claude/hooks/guard_secrets.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -7,12 +7,12 @@
 ```
         P1   P2   P3
           \   |   /
-   P4 ──── [ GOD ] ──── P5      helper ─── GOD
+   P4 ──── [ GOD ] ──── P5      reporter ─── GOD
           /   |   \
         P6   P7   P8   P9
 ```
 
-helper 只與上帝通訊，且**只接受來自上帝的指令**。
+reporter 只與上帝通訊（唯一例外：人類觀戰者可直接要求它重建報表，那不影響對局）。
 
 ## 上帝發給你的訊息，固定包含四要素
 
@@ -25,7 +25,7 @@ helper 只與上帝通訊，且**只接受來自上帝的指令**。
 
 ## 你回覆的格式
 
-由對應的動作 skill 規定。上帝指派 `/speak` 時，格式就寫在 `speak` 這個 skill 裡；`/vote`、`/night-action`、`/vote-mvp` 同理。
+由對應的動作 skill 規定。上帝指派 `/player-speak` 時，格式就寫在該 skill 裡；`/player-vote`、`/player-night-action`、`/player-vote-mvp` 同理。
 
 **照 skill 的格式回覆**，上帝才能確定性地解析你的回應。
 

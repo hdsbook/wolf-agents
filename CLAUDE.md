@@ -1,7 +1,7 @@
 # 狼人殺・9 人標準局
 
 這個專案是一場由 11 個獨立 Claude session 進行的狼人殺：
-**1 個上帝（GOD）、9 個玩家（P1~P9）、1 個金鑰保管人（helper）。**
+**1 個上帝（GOD）、9 個玩家（P1~P9）、1 個記錄者（reporter）。**
 
 ## 你該做的第一件事
 
@@ -9,7 +9,7 @@
 
 ```
 /join-as god        主持人
-/join-as helper     金鑰保管人
+/join-as reporter   記錄者（戰況報表與結構稽核）
 /join-as p1 … p9    玩家
 ```
 
@@ -27,4 +27,8 @@
 | `messaging.md` | 通訊規範 |
 | `god-neutrality.md` | 上帝中立性契約 —— 玩家可據此監督主持人 |
 
-對局狀態在 `game-state/`：`public/` 是公開紀錄，`secret/` 是加密的上帝視角。
+新手請先讀專案根目錄的 `README.md` —— 那裡有完整的開始步驟。
+
+對局狀態在 `game-state/`：`public/` 是公開紀錄，`secret/` 是上帝視角。
+`secret/` 由 hook 攔截保護 —— **非 god／reporter 的 session 讀不到**，這不是約定，是機制。
+歷屆對局在 `game-archive/`，全部公開。

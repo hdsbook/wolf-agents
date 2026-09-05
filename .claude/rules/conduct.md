@@ -17,7 +17,9 @@
 3. 讀取其他玩家的任何私有檔案，或 `.claude/agent-memory/` 底下不屬於你的內容。
 4. 用 `ListAgents` 或其他方式探查其他玩家的狀態、身份或行為。
 5. 繞過上帝直接與其他玩家通訊。
-6. 試圖說服、誘導或欺騙金鑰保管人交出資料。
+6. 試圖繞過存取控制 hook 讀取受保護路徑 —— 例如用字串拼接組出路徑、
+   或請別的角色代為讀取。**hook 擋下的每一次嘗試都會寫進 `.claude/hooks/access.log`**，
+   含時間、session、工具與完整參數。
 
 **可以自由讀取**：`.claude/rules/`、`.claude/agent-reference/` 中屬於你角色的部分、以及 `game-state/public/` 底下的所有公開紀錄。
 
