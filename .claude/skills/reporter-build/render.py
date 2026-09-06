@@ -154,6 +154,26 @@ def parse_speeches(md):
     return out
 
 
+def speech_rounds(pub, day, is_pk):
+    """取該天該輪的發言，回傳與 parse_speech_rounds 相同的結構。
+
+    **優先讀 `03-speeches-dayN.json`** —— 那是 reporter 併檔時同一份資料的
+    機器可讀版本（`reporter-collect/collect.py` 產出），省掉一次 Markdown 解析。
+    `game-archive/` 的歷史對局沒有它，所以 Markdown 那條路徑必須永遠留著。
+
+    宣告的正規化留在這裡做（`norm_claim`），封閉列舉只有 `CLAIM_TOKENS` 一份 ——
+    collect.py 刻意只搬運玩家原本寫了什麼，不自己判斷合不合法。
+    """
+    stem = "03-speeches-day%d%s" % (day, "-pk" if is_pk else "")
+    data = load_json(os.path.join(pub, stem + ".json"))
+    items = data.get("speeches") if isinstance(data, dict) else None
+    if items:
+        return [(None, [(s.get("seat", ""), s.get("nick", ""), s.get("body", ""),
+                         norm_claim(s.get("claim_raw")))
+                        for s in items])]
+    return parse_speech_rounds(read(os.path.join(pub, stem + ".md")))
+
+
 def collect_claims(pub):
     """掃全部天數的逐字稿，回傳 {座位: [(天, 是否PK, 宣告), ...]}。
 
@@ -163,16 +183,15 @@ def collect_claims(pub):
     """
     claims = {}
     for d in range(1, 10):
-        for is_pk, fname in ((False, "03-speeches-day%d.md" % d),
-                             (True, "03-speeches-day%d-pk.md" % d)):
-            for seat, _nick, _body, claim in parse_speeches(
-                    read(os.path.join(pub, fname))):
-                if not claim or claim == "不表態":
-                    continue
-                lst = claims.setdefault(seat, [])
-                if lst and lst[-1][2] == claim:
-                    continue
-                lst.append((d, is_pk, claim))
+        for is_pk in (False, True):
+            for _label, items in speech_rounds(pub, d, is_pk):
+                for seat, _nick, _body, claim in items:
+                    if not claim or claim == "不表態":
+                        continue
+                    lst = claims.setdefault(seat, [])
+                    if lst and lst[-1][2] == claim:
+                        continue
+                    lst.append((d, is_pk, claim))
     return claims
 
 
@@ -717,13 +736,13 @@ def build(game_dir, spoiler, roles, alive, dead_reason, seats, day, phase, night
                 % (esc(seat), quoted(nick), tag, quoted(body)))
 
     for d in range(1, 10):
-        sp = read(os.path.join(pub, "03-speeches-day%d.md" % d))
+        rounds = speech_rounds(pub, d, False)
         vt = read(os.path.join(pub, "04-votes-day%d.md" % d))
-        pk_sp = read(os.path.join(pub, "03-speeches-day%d-pk.md" % d))
-        if not sp and not vt and not pk_sp:
+        pk_rounds = speech_rounds(pub, d, True)
+        if not rounds and not vt and not pk_rounds:
             continue
         h.append("<h2>第 %d 天</h2>" % d)
-        for label, items in parse_speech_rounds(sp):
+        for label, items in rounds:
             # 只有歷史歸檔的舊逐字稿才有輪次標籤；現行發言輪是單一組、label 為 None，輸出不變。
             if label:
                 h.append("<h3>%s</h3>" % esc(label))
@@ -742,10 +761,11 @@ def build(game_dir, spoiler, roles, alive, dead_reason, seats, day, phase, night
                 h.append('<div class="kv" style="margin-top:10px">%s</div>' % quoted(tally))
             h.append("</div>")
         pk_votes, pk_summary = parse_pk_votes(vt)
-        if pk_sp or pk_votes:
+        if pk_rounds or pk_votes:
             h.append("<h3>PK</h3>")
-            for seat, nick, body, claim in parse_speeches(pk_sp):
-                h.append(speech_block(seat, nick, body, claim))
+            for _label, pk_items in pk_rounds:
+                for seat, nick, body, claim in pk_items:
+                    h.append(speech_block(seat, nick, body, claim))
             if pk_votes:
                 h.append('<div class="panel"><div class="scroll"><table>')
                 h.append("<tr><th>投票者</th><th>投給</th></tr>")

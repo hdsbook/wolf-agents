@@ -74,7 +74,12 @@ public/00-players.md   public/03-speeches-dayN.md   public/04-votes-dayN.md
 secret/roles.json      secret/potions.json          secret/nightlog.json
 ```
 
-其中 `03-speeches-dayN.md` 在發言輪會反覆追加：每位發言後追加一次，
+**逐字稿那一項優先讀 `03-speeches-dayN.json`** —— 那是 `/reporter-collect`
+的 `collect.py` 併檔時產出的同一份資料，只是機器可讀，省掉一次 Markdown 解析。
+**沒有 JSON 就照樣解析 `.md`**：`game-archive/` 的歷史對局都走那條路，
+所以它永遠留著。兩條路徑產出的報表是相同的。
+
+其中 `03-speeches-dayN.*` 在發言輪會反覆重生成：每位發言後一次，
 一天約 9 則通知，由上帝的 subagent 送出（送完就結束，不等你回覆）。
 
 **每則都照跑，不要合併、不要跳過** —— 合併就等於自己決定觀戰者哪幾位的發言
