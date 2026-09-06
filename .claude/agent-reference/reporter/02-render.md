@@ -24,7 +24,7 @@
 | `public/00-players.md` | 座位與暱稱 |
 | `public/02-status.md` | 天數、階段、存活名單、下一步 |
 | `public/01-timeline.md` | 每階段的公開事件 |
-| `public/03-speeches-dayN.md` | 發言逐字稿（**全文，不摘要**） |
+| `public/03-speeches-dayN.md` | 發言逐字稿（**全文，不摘要**）。同名的 `.json` 存在時優先讀它 —— 那是 `collect.py` 併檔時產出的同一份資料，兩條路徑結果相同 |
 | `public/04-votes-dayN.md` | 票型與投票理由 |
 | `secret/roles.json` | 底牌（**只進劇透版**） |
 | `secret/nightlog.json` | 每夜刀／查驗／用藥（**只進劇透版**） |
