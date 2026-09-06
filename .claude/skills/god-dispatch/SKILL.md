@@ -15,89 +15,78 @@ description: 狼人殺・上帝對玩家發訊的唯一管道。從固定模板�
 
 從模板渲染，就沒有夾帶的縫隙。
 
-## 可用的 action
+## 東西在哪裡
 
-**模板按階段拆成七份，一次只讀你這一步用得到的那一份。** 不要整包讀進來。
+模板與渲染器都在 **`.claude/message-templates/`**，**玩家也讀得到** ——
+那是刻意的：公版訊息由玩家自己渲染，而且 `god-neutrality.md` 本來就讓玩家
+拿模板監督你，模板藏起來那條監督權就是空的。
+
+模板裡只有插槽沒有值，所以公開它不洩漏任何東西。
+
+## 兩種傳遞方式
+
+| 方式 | 用在哪些 action | 你的上下文裡會有什麼 |
+|---|---|---|
+| **參數廣播** | 不含機密的公版訊息 | 只有參數與一則**九個人完全相同**的短訊息 |
+| **直送** | 含機密的訊息 | 完整訊息本文（無法避免，內容本來就是機密） |
 
 | action | 用途 | 發送方式 | 模板檔 |
 |---|---|---|---|
-| `notice` | **指路** —— 告訴玩家他的信在哪 | 並行・直送 | `references/notice.md` |
-| `deal` | 通訊測試 + 指派暱稱 + 發牌 + 自介落檔與公平競賽承諾 | 並行（9 玩家）・直送 | `references/open.md` |
-| `roster` | 名冊廣播 | 並行・**落檔** | `references/open.md` |
-| `night_wolf_open` | 狼人睜眼＋告知隊長＋收暗號 | 並行（狼隊）・直送 | `references/night.md` |
-| `night_wolf_relay` | 隊友暗號轉給隊長，請他拍板 | 單點（隊長）・直送 | `references/night.md` |
-| `night_wolf_plan` | 隊長的決定轉達其他狼 | 並行（非隊長）・直送 | `references/night.md` |
-| `night_seer` | 預言家查驗 | 單點・直送 | `references/night.md` |
-| `night_seer_result` | 查驗結果 | 單點・直送 | `references/night.md` |
-| `night_witch` | 女巫用藥 | 單點・直送 | `references/night.md` |
-| `dawn` | 天亮公告 | 並行・**落檔** | `references/day.md` |
-| `ask_speak` | 指派發言 | 依序，一位一位・**落檔** | `references/day.md` |
-| `ask_claim` | 補問漏填的身份宣告 | 單點・**落檔** | `references/day.md` |
-| `ask_vote` | 收票 | 並行・**落檔** | `references/vote.md` |
-| `tally` | 唱票公告 | 並行・**落檔** | `references/vote.md` |
-| `eliminated` | 通知出局者 | 單點・**落檔** | `references/vote.md` |
-| `hunter_shot` | 獵人開槍 | 單點・直送 | `references/hunter.md` |
-| `game_over` | 終局公布 | 並行・**落檔** | `references/endgame.md` |
-| `ask_mvp` | 賽後 MVP | 並行・**落檔** | `references/endgame.md` |
-| `abort` | 對局中止 | 並行・**落檔** | `references/abort.md` |
+| `notice` | **參數廣播的那一則**（九個人完全相同） | 並行・直送 | `notice.md` |
+| `roster` | 名冊廣播 | 並行・**參數廣播** | `open.md` |
+| `dawn` | 天亮公告 | 並行・**參數廣播** | `day.md` |
+| `ask_speak` | 指派發言 | 依序，一位一位・**參數廣播** | `day.md` |
+| `ask_claim` | 補問漏填的身份宣告 | 單點・**參數廣播** | `day.md` |
+| `ask_vote` | 收票 | 並行・**參數廣播** | `vote.md` |
+| `tally` | 唱票公告 | 並行・**參數廣播** | `vote.md` |
+| `eliminated` | 通知出局者 | 單點・**參數廣播** | `vote.md` |
+| `game_over` | 終局公布 | 並行・**參數廣播** | `endgame.md` |
+| `ask_mvp` | 賽後 MVP | 並行・**參數廣播** | `endgame.md` |
+| `abort` | 對局中止 | 並行・**參數廣播** | `abort.md` |
+| `deal` | 發牌（身份牌） | 並行（9 玩家）・直送 | `open.md` |
+| `night_wolf_open` | 狼人睜眼＋告知隊長＋收暗號 | 並行（狼隊）・直送 | `night.md` |
+| `night_wolf_relay` | 隊友暗號轉給隊長 | 單點（隊長）・直送 | `night.md` |
+| `night_wolf_plan` | 隊長的決定轉達其他狼 | 並行（非隊長）・直送 | `night.md` |
+| `night_seer` | 預言家查驗 | 單點・直送 | `night.md` |
+| `night_seer_result` | 查驗結果 | 單點・直送 | `night.md` |
+| `night_witch` | 女巫用藥 | 單點・直送 | `night.md` |
+| `hunter_shot` | 獵人開槍 | 單點・直送 | `hunter.md` |
 
-`hunter.md` 單獨一份，是因為它在夜間結算、天亮、投票出局**三個階段都會用到** ——
-放進任何一份階段檔，另外兩個階段就得為了一則模板讀進整份。
-
-不確定某個 action 在哪一份、有哪些插槽：
+不確定某個 action 有哪些插槽：
 
 ```bash
-python .claude/skills/god-dispatch/scripts/render.py --list
+python .claude/message-templates/render.py --list
 ```
 
-它會連每個 action 的插槽名一起列出來，**不必開檔**。
+## 參數廣播：怎麼做
 
-## 落檔＋指路：公版內容不進你的上下文
-
-標**落檔**的那些 action，**不要把內容送給玩家**。改成兩步：
+### 兩步
 
 ```bash
-# 1. 寫進信箱。stdout 只回你一張清單，訊息本文你從頭到尾看不到
-python .claude/skills/god-dispatch/scripts/render.py dawn payload.json --out game-state/public/mailbox/d2-dawn/
+# 1. 把這一則的欄位值寫成一個參數檔（用 Write 直接寫，不需要腳本）
+#    game-state/public/mailbox/d2-vote/params.json
 
-# 2. 指路。九個人拿到的除了座位與檔名之外完全相同
-/god-dispatch notice
+# 2. 渲染那一則指路訊息 —— 只渲染一次
+python .claude/message-templates/render.py notice --params <notice 的參數>
 ```
 
-**順序不可顛倒** —— 先有檔才能指路。
+然後**把第 2 步印出來的那個字串，原封不動送給每一位**。
 
-信箱路徑是 `game-state/public/mailbox/<tag>/<座位>.md`，`tag` 帶階段
-（`d2-dawn`／`d2-speak-3`／`d2-vote`／`open-roster`／`end-gameover`…），
-**避免玩家讀到上一輪的信**。即使九個人內容完全相同也一人一檔 ——
-玩家只要記一條規則，不必分辨哪些是共用檔。
+### 為什麼只渲染一次
 
-`ask_speak` 是依序一位一位的，`filed_list` 每輪都會變，所以它**每一輪各跑一次**。
+`notice` 模板**沒有 `{{seat}}`** —— 座位由玩家自己代入命令列。
+所以九個人拿到的字完全相同，你的上下文裡只會出現一份。
 
-### 為什麼是這幾則，以及為什麼腳本會擋你
+**不要為了「比較親切」而在 notice 裡加上收件人的名字或任何因人而異的欄位** ——
+那會讓它變成九份不同的訊息，這一整套優化就沒了。
 
-判準不是「公版還是私訊」，是**含不含機密** —— 而且**收件人本身就可能是機密**：
-`night_seer` 發給誰，就等於公布了預言家是誰；`hunter_shot` 同理。
+### 參數檔長什麼樣
 
-信箱在 `game-state/public/` 底下，**全場都讀得到**。所以可落檔的清單
-**硬編在 `render.py` 的 `FILE_OK` 裡**，對其餘 action 一律拒絕、一個檔都不產生。
-這讓「底牌不會落到公開區」變成機制，不是文件上的約定 —— 打錯一個 action 名就被擋下。
-
-## 批次渲染（廣播一律用這個）
-
-並行發 9 則時，一則一則手工填插槽既慢又容易漏一個。用腳本一次產出全部：
-
-```bash
-python .claude/skills/god-dispatch/scripts/render.py <action> <payload.json>
-```
-
-payload 只有兩個欄位 —— `common` 放大家一樣的，`recipients` 只寫每個人不一樣的：
+`common` 是大家一樣的、`recipients` 只寫每個人不一樣的：
 
 ```json
 {
-  "common": {
-    "day": "2", "alive_count": "8",
-    "alive_list": "…", "hunter_shot_line": null
-  },
+  "common": { "day": "2", "alive_count": "8", "hunter_shot_line": null },
   "recipients": [
     { "to": "P6", "your_position": "1" },
     { "to": "P7", "your_position": "2" }
@@ -105,26 +94,64 @@ payload 只有兩個欄位 —— `common` 放大家一樣的，`recipients` 只
 }
 ```
 
+只有一位收件人時可以直接攤平，不必包 `common`／`recipients`。
+
+### 這幾個欄位不要自己填 —— 腳本會算
+
+| 欄位 | 從哪裡算出來 |
+|---|---|
+| `alive_count` | 數 `alive_list` 裡的座位 |
+| `your_position`／`n` | 這位玩家在 `speech_order` 裡的位置 |
+| `total` | `speech_order` 裡的座位總數 |
+
+**所以大部分公版訊息的參數是扁平的，根本不需要 `recipients` 陣列** ——
+每個人不一樣的那幾個欄位，腳本從 `speech_order` 就推得出來。
+
+`dawn` 是最好的例子：參數扁平只有 277 字，而且**你完全不必渲染它**，
+玩家各自渲染出自己的順位。舊做法是你生成 8 份完整訊息共 2568 字。
+
+> 沒給 `speech_order` 就不推導 —— 寧可讓「插槽沒填」的檢查擋下來，
+> 也不要猜一個看起來合理的值。你手動填的值永遠優先。
+
 三條規則：
 
 - recipient 的欄位**覆蓋** `common` 的同名欄位
 - `to` 同時填進 `{{seat}}`（模板沒有 `{{seat}}` 就自動忽略）
 - 值寫 `null` → **整行省略**。`{{leader_note}}`、`{{assignments}}`、
-  `{{hunter_shot_line}}`、`{{wolf_teammates_line}}` 這類「留空就整行不要」的插槽用它。
+  `{{hunter_shot_line}}`、`{{timeout_note}}` 這類「留空就整行不要」的插槽用它。
   想留白但保留該行，寫空字串 `""`
 
-輸出是一段一段的 `===== → P6 =====`，照著並行送出即可。
-**腳本會先把該 action 的模板註記印在最前面** —— 那些是渲染時的但書（例如
-`{{leader_note}}` 只有兩種值、只剩一狼時要整段省略），送出前確認你照做了。
+參數檔放在 `game-state/public/mailbox/<tag>/params.json`，`tag` 帶階段
+（`d2-dawn`／`d2-speak-3`／`d2-vote`／`open-roster`／`end-gameover`…），
+**避免玩家渲染出上一輪的內容**。
 
-### 腳本會擋下三件事
+`ask_speak` 是依序一位一位的，`filed_list` 每輪都會變，所以它**每一輪各寫一份參數檔**。
 
-任一不過就**整批不輸出**，exit code 1：
+### 玩家那一端
 
-1. 有插槽沒填（渲染後還留著 `{{...}}`）
-2. 命中中立性禁用詞
-3. payload 給了模板沒有的欄位 —— 這條專治**打錯欄位名**：
-   打錯的那個沒生效，真正的插槽卻空著，人眼很難看出來
+他照 notice 裡的指令跑：
+
+```bash
+python .claude/message-templates/render.py dawn --seat P3 --params game-state/public/mailbox/d2-dawn/params.json
+```
+
+印出來就是完整訊息，四要素一項都不少。渲染失敗他會回報你，**不會自己猜內容**。
+
+## 直送：含機密的那八則
+
+`deal`、`night_*`、`hunter_shot` 走這條。**它們的參數本身就是機密**
+（身份牌、隊友名單、查驗結果、今晚被刀者），而且**收件人有時候也是機密** ——
+收到 `night_seer` 的人就是預言家，收到 `hunter_shot` 的人就是獵人。
+
+參數檔在公開區，所以這幾則不能走參數廣播。渲染後直接送出全文：
+
+```bash
+python .claude/message-templates/render.py night_wolf_open --params p.json
+```
+
+> 落檔（`--out`）也受同一條限制，而且是**腳本強制**的：
+> 可落檔的清單硬編在 `render.py` 的 `FILE_OK` 裡，對其餘 action 一律拒絕、
+> 一個檔都不產生。打錯一個 action 名就被擋下，不必依賴你有沒有讀到這張表。
 
 ## 渲染後必跑的四項檢查
 
@@ -137,22 +164,29 @@ payload 只有兩個欄位 —— `common` 放大家一樣的，`recipients` 只
 3. **逐字稿是原文**：與 `game-state/public/03-speeches-dayN.md` 逐字相同，**不摘要**
 4. **無形容詞化轉述**：不出現「他直接對你喊話」「最鋒利的一擊」這類替玩家標記重點的句子
 
-**第 2 項由腳本代跑**（連同插槽完整性）。**第 1、3、4 項機器判不了，你自己看。**
+**第 2 項由腳本代跑**（連同插槽完整性、以及參數裡有沒有模板用不到的欄位）。
+**第 1、3、4 項機器判不了，你自己看。**
 
 任一項不過 → **不要送出**，回頭修模板。
 
+> 參數廣播的訊息本文你不會看到 —— 那正是重點。第 1、3、4 項改成**看參數**：
+> 你填進去的值有沒有夾帶評價、有沒有摘要別人的發言。模板本身是固定的，
+> 唯一能夾帶東西的地方就是你填的那些值。
+
 ## 模板不夠用怎麼辦
 
-**去改對應的那一份 `references/*.md`**（對所有人一致生效），不要這一次多寫幾句。
+**去改對應的那一份 `.claude/message-templates/*.md`**（對所有人一致生效），
+不要這一次多寫幾句。
 
-改完跑一次 `--selftest`，確認 18 個 action 都還取得出模板本文：
+改完跑一次 `--selftest`，確認每個 action 都還取得出模板本文：
 
 ```bash
-python .claude/skills/god-dispatch/scripts/render.py --selftest
+python .claude/message-templates/render.py --selftest
 ```
 
 > **模板本文是標題之後的第一個圍欄區塊。** 內文本身含有 ``` 的模板（例如 `deal`
-> 要玩家建立檔案），外層必須用四個反引號 ```` 包起來，否則會被切在半路。
+> 要玩家建立檔案、`notice` 要玩家跑指令），外層必須用四個反引號 ```` 包起來，
+> 否則會被切在半路。
 
 改完在該階段的公開紀錄中記一筆，讓玩家知道模板變過。
 

@@ -198,6 +198,6 @@ SendMessage → GOD
 
 1. **玩家沒有跨局記憶。** `.claude/agent-memory/` 底下沒有玩家目錄，這是公平性要求 —— 每一局都從零開始。
 2. **上帝對玩家嚴格中立。** 他不會給你戰術建議。若他給了，那違反 `rules/god-neutrality.md`，你可以當場指出來。
-3. **動作細節按需載入。** 上帝的私訊會告訴你這一步要跑哪個 skill（`/player-speak`、`/player-vote`、`/player-night-action`、`/player-vote-mvp`），格式寫在那些 skill 裡，現在不必記。
+3. **動作細節按需載入。** 上帝的私訊會告訴你這一步要跑哪個 skill（`/player-inbox`、`/player-speak`、`/player-vote`、`/player-night-action`、`/player-vote-mvp`），格式寫在那些 skill 裡，現在不必記。
 4. **受保護的路徑會被實際擋下。** 這不是信任問題，是機制 —— 它讓「不小心讀到」變成不可能，
    也讓每一次刻意嘗試都留下紀錄。被擋到請回報上帝。

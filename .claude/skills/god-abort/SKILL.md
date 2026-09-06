@@ -61,8 +61,8 @@ roster 空的時候存取控制一律放行（`guard_secrets.py` 的 bootstrap �
 
 **預設不通知任何人。** 玩家的 session 停在等訊息是正常的，使用者自己會收掉視窗。
 
-使用者**主動要求**時，才落檔＋指路（`render.py abort <payload> --out
-game-state/public/mailbox/abort/`，再 `/god-dispatch notice`）發給全體 ——
+使用者**主動要求**時，才走參數廣播（參數寫進 `game-state/public/mailbox/abort/params.json`，
+再 `/god-dispatch notice`）發給全體 ——
 那則模板只有兩節，**不寫原因、不揭底牌、不做總結**。中立性的解除條件是終局，中止不是終局。
 
 ## 5. 驗證
