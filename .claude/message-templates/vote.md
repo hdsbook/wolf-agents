@@ -1,9 +1,16 @@
 # 訊息模板・投票
 
 **上帝對玩家的訊息一律從模板渲染，不自由撰寫。** 插槽以 `{{...}}` 標示，
-渲染後不得增添模板以外的句子。完整 action 索引與渲染規則在 `../SKILL.md`。
+渲染後不得增添模板以外的句子。
 
-批次渲染：`python .claude/skills/god-dispatch/scripts/render.py <action> <payload.json>`
+**這個目錄玩家也讀得到**，而且公版訊息就是由玩家自己渲染的：
+
+```bash
+python .claude/message-templates/render.py <action> --seat P<你的座位> --params <參數>
+```
+
+玩家端的說明在 `/player-inbox`；上帝端的 action 索引與渲染規則在
+`.claude/skills/god-dispatch/SKILL.md`。
 
 ---
 

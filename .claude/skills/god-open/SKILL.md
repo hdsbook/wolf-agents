@@ -183,8 +183,9 @@ P<n>・<暱稱> 就位
 
 ## 9. 名冊廣播
 
-**落檔＋指路**：先 `render.py roster <payload> --out game-state/public/mailbox/open-roster/`，
-再 `/god-dispatch notice` 並行指路。內容是**座位暱稱表 ＋ `intro-inbox/` 路徑與已落檔檔名清單**。
+**參數廣播**：把欄位值寫成 `game-state/public/mailbox/open-roster/params.json`，
+再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
+參數是**座位暱稱表 ＋ `intro-inbox/` 路徑與已落檔檔名清單**。
 
 **不貼任何一句自介內文**（同逐字稿規矩，見 `rules/god-neutrality.md`）。
 玩家之間不互相發送。

@@ -7,8 +7,8 @@ description: 狼人殺・白天投票、唱票、平票 PK 與出局結算。含
 
 ## 1. 收票
 
-**落檔＋指路**：先 `render.py ask_vote <payload> --out game-state/public/mailbox/d{N}-vote/`，
-再 `/god-dispatch notice` 並行指路。
+**參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-vote/params.json`，
+再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
 
 附：存活名單、公開逐字稿路徑、發言階段的票型指向、規則提醒（平票 PK、逾時棄票、獵人可開槍）。
 
@@ -31,8 +31,9 @@ tie = len(top) > 1 and top[1][1] == top[0][1]
 
 ## 3. 公布
 
-**落檔＋指路**：先 `render.py tally <payload> --out game-state/public/mailbox/d{N}-tally/`，
-再 `/god-dispatch notice` 並行指路。內容含完整票型**與所有投票理由的原文**。
+**參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-tally/params.json`，
+再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
+參數含完整票型**與所有投票理由的原文**。
 
 同時寫進 `public/04-votes-dayN.md`。
 
@@ -65,7 +66,7 @@ SendMessage → reporter
 
 ## 5. 出局結算
 
-1. 通知出局者：`render.py eliminated <payload> --out game-state/public/mailbox/d{N}-out/`，再 `/god-dispatch notice`
+1. 通知出局者：參數寫進 `game-state/public/mailbox/d{N}-out/params.json`，再 `/god-dispatch notice` 送他一個人
 2. **出局者若為獵人** → `/god-dispatch hunter_shot` 詢問開槍對象，並結算被帶走的人
 3. **身份一律不公布**
 
