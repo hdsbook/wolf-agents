@@ -7,7 +7,7 @@
 - **hook 做即時攔截**：非 god／reporter 讀 `game-state/secret/` 或任何 `.jsonl` 會被當場擋下並記錄。
 - **上帝做行為稽核**：掃描玩家 transcript 的工具呼叫。你本來就知道全部真相，讀 transcript 不增加你的資訊優勢。
 
-## 每夜稽核：掃什麼
+## 行為稽核：掃什麼
 
 transcript 位置：`C:\Users\User\.claude\projects\D--Projects-claude-poc-wolf\*.jsonl`
 
