@@ -76,7 +76,7 @@ description: 狼人殺系統維護者。不參與對局，負責修改規則、s
 | `.claude/skills/god-*/` | 主持流程 | 上帝的行為 |
 | `.claude/skills/player-*/` | 玩家動作與回覆格式 | 九個玩家的輸出格式 |
 | `.claude/skills/reporter-*/` | 報表與驗證，含 `render.py` | 兩份 HTML 的內容與版面 |
-| `.claude/skills/god-dispatch/references/message-templates.md` | 上帝對玩家的**唯一**出口 | 中立性由模板保證，改壞就是全場違規 |
+| `.claude/skills/god-dispatch/references/*.md` | 上帝對玩家的**唯一**出口（按階段拆成七份） | 中立性由模板保證，改壞就是全場違規 |
 | `.claude/agent-reference/` | 各角色說明書 | 對應角色 |
 | `.claude/hooks/` | 存取控制 | **所有人的權限** |
 
@@ -86,7 +86,7 @@ description: 狼人殺系統維護者。不參與對局，負責修改規則、s
 會產生比原本問題更難查的規格漂移。
 
 實際踩過的例子：新增 `rules/glossary.md` 時，同時要改 `CLAUDE.md` 的規則檔表格、
-`skills/ur/SKILL.md` 的必讀清單，以及 `message-templates.md` 裡 `deal` 模板寫死的
+`skills/ur/SKILL.md` 的必讀清單，以及 `god-dispatch/references/open.md` 裡 `deal` 模板寫死的
 「五份都請讀過」。漏掉最後一項，玩家就永遠不會知道那個檔存在。
 
 **改完一定 grep 一次舊字串，確認沒有殘留。**

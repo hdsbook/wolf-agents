@@ -23,7 +23,8 @@ direction = random.choice(['順','逆'])
 
 ### 3. 公告
 
-`/god-dispatch dawn` —— **並行**發給所有存活者，內容一致（含發言順序表）。
+**落檔＋指路**：先 `render.py dawn <payload> --out game-state/public/mailbox/d{N}-dawn/`，
+再 `/god-dispatch notice` 並行指路。內容一致（含發言順序表），本文不進你的上下文。
 
 - **只報死了誰，不報死因，不公布身份**
 - 無人死亡則公布「平安夜」
@@ -51,7 +52,7 @@ else:                                         繼續
 
 ### 5. 天亮落檔並通知 reporter
 
-**這一步必須排在 `/god-dispatch dawn` 送出之後。** 公開版報表會據 `potions.json`
+**這一步必須排在 `dawn` 的指路訊息送出之後**（不是寫檔之後 —— 玩家還沒被通知，公告就還沒發生）。 公開版報表會據 `potions.json`
 把死者標成 X —— 先渲染就等於在公告之前先讓玩家看到死亡名單。
 
 1. 更新 `secret/potions.json`（存活／死亡名單、天數、階段）
@@ -74,9 +75,13 @@ else:                                         繼續
 
 ### 每一位的流程
 
-1. `/god-dispatch ask_speak` —— 給他順位、他要寫的 inbox 路徑、
+1. **落檔＋指路**：`render.py ask_speak <payload> --out game-state/public/mailbox/d{N}-speak-{位次}/`，
+   再 `/god-dispatch notice`。內容是他的順位、他要寫的 inbox 路徑、
    以及 **`filed_list`：到此為止已回報落檔的完整檔名清單**。
    **不附任何逐字稿。**
+
+   > `filed_list` 每一輪都會變，所以**每一位各跑一次** `render.py`，
+   > `tag` 用他的位次區隔（`d2-speak-1`、`d2-speak-2`…），避免讀到上一位的信。
 
    > 這張清單是玩家「有沒有漏讀」的唯一判準，**必須完整且正確**。
    > 你手上有全部的落檔回報，這是你在這個階段唯一真正要維護的狀態。

@@ -18,6 +18,8 @@
 game-state/
 ├── public/     明文，玩家與使用者都可讀，且不會劇透
 │   ├── HOSTING-PROCEDURE/     規則副本（目錄，`.claude/rules/` 六份）
+│   ├── mailbox/               信箱（目錄）—— 公版訊息落檔處，玩家自己來讀
+│   │                          `<tag>/<座位>.md`，tag 帶階段避免讀到上一輪
 │   ├── 00-players.md          座位、暱稱、結局
 │   ├── 01-timeline.md         每階段公開播報流水帳（追加式）
 │   ├── 02-status.md           ★ 每階段覆寫，見下
@@ -192,8 +194,11 @@ reporter 不回覆，阻塞本來就不存在。
 `potions.json` 的 `result` 一有值，它還會列出全員底牌。
 
 所以**結果尚未公告的那兩個時刻一律加 `spoiler`**：夜間收尾（天亮還沒公告）、
-勝負達成當下（`game_over` 還沒發）。天亮那次必須排在 `/god-dispatch dawn` 之後，
-終局揭底那次必須排在 `/god-dispatch game_over` 之後。
+勝負達成當下（`game_over` 還沒發）。天亮那次必須排在 `dawn` 的**指路訊息送出之後**，
+終局揭底那次必須排在 `game_over` 的**指路訊息送出之後**。
+
+> 這兩則現在是落檔＋指路的：`render.py ... --out` 寫檔、`/god-dispatch notice` 指路。
+> **觸發點是指路訊息送出的那一刻，不是寫檔的那一刻** —— 玩家還沒被通知，公告就還沒發生。
 
 **少打 `spoiler` 這兩個字，等於搶在自己之前把結果公布給全場。**
 

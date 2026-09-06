@@ -11,7 +11,8 @@ description: 狼人殺・終局。公布底牌、寫戰報、終局全場稽核�
 
 ## 1. 公布結果與底牌
 
-`/god-dispatch game_over` —— **並行**發給全部 9 位（含已出局者）。
+**落檔＋指路**：先 `render.py game_over <payload> --out game-state/public/mailbox/end-gameover/`，
+再 `/god-dispatch notice` 並行指路全部 9 位（含已出局者）。
 
 **建議為每位玩家客製一段個人回饋**：他的判斷哪些對了、哪些沒對、他的死因、他留下了什麼。
 **這時中立性已解除** —— 底牌公開、勝負已定，中立性的目的已經達成。
@@ -27,7 +28,8 @@ SendMessage → reporter
 ```
 
 ```
-/god-dispatch ask_mvp    —— 並行邀請 9 位執行 /player-vote-mvp
+render.py ask_mvp <payload> --out game-state/public/mailbox/end-mvp/
+/god-dispatch notice     —— 並行指路 9 位，讀完執行 /player-vote-mvp
 ```
 
 然後**你自己去跑稽核**（第 3 步）。

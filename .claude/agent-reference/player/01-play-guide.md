@@ -12,6 +12,7 @@
 | 你的情境 | 做什麼 |
 |---|---|
 | 剛加入，還沒拿到身份牌 | 讀 `.claude/rules/` 六份，等上帝私訊 —— 開局他只會發你**一則**，裡面同時要你確認就位、寫自介、做出承諾 |
+| 上帝說我的指令在信箱 | `Read` 他指定的那個檔（`game-state/public/mailbox/...`），照裡面說的做。**檔不在、或內容不是給你的 → 回報上帝，不要自己推進** |
 | 上帝說輪到我發言 | 跑 `/player-speak`，格式寫在裡面。**發言要用 `Write` 落檔，不是回覆給上帝** |
 | 我想用指令讀公開檔 | 可以，但路徑要寫到 `game-state/public/` 這一層。只寫 `game-state` 又帶遞迴旗標會被擋 —— 它是 `secret/` 的上層 |
 | 上帝說要投票或 PK 重投 | 跑 `/player-vote` |
@@ -20,7 +21,7 @@
 | 想知道前面的人講了什麼 | 讀 `game-state/public/03-speeches-dayN.md`（全文逐字稿） |
 | 想知道昨天誰投了誰、理由是什麼 | 讀 `game-state/public/04-votes-dayN.md` |
 | 想知道現在第幾天、誰還活著 | 讀 `game-state/public/02-status.md`，或 `game-state/report/index.html` |
-| 想知道規則怎麼寫的 | `.claude/rules/`，五份都是公開的 |
+| 想知道規則怎麼寫的 | `.claude/rules/`，六份都是公開的 |
 | 想看歷屆對局 | `game-archive/`，全部公開 |
 
 **上帝的私訊一定會告訴你要跑哪一支 skill。** 細節在那支 skill 裡，現在不必記。
