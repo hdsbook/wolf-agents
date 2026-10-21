@@ -37,20 +37,10 @@ CONFLICT_LOG = os.path.join(PUBLIC_DIR, "roster-conflicts.log")
 SESSIONS = os.path.join(PUBLIC_DIR, "roster-sessions.json")
 ROLES_FILE = os.path.join(PROJECT_DIR, "game-state", "secret", "roles.json")
 
-PRIVILEGED_CLAIM = ("god", "reporter", "maintainer")
-
-VALID_ROLES = ["god", "reporter", "maintainer"] + ["p%d" % i for i in range(1, 10)]
-
-
-def normalize_role(raw):
-    """god / reporter / maintainer / p1~p9；P3、3 這些寫法都接受。"""
-    r = (raw or "").strip().lower()
-    if r in ("god", "reporter", "maintainer"):
-        return r
-    m = re.fullmatch(r"p?([1-9])", r)
-    if m:
-        return "p" + m.group(1)
-    return None
+# 角色代號的唯一來源（hook 的 policy.py 也 import 同一份）。
+# 明確加路徑：python -I 不會把腳本所在目錄放進 sys.path。
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from roles import VALID_ROLES, PRIVILEGED_CLAIM, is_player, normalize_role  # noqa: E402
 
 
 def log_conflict(text):
@@ -99,7 +89,7 @@ def main():
     in_game = os.path.exists(ROLES_FILE)
     current = [r for r, sid in roster.items() if sid == session_id and r != role]
 
-    if in_game and role in PRIVILEGED_CLAIM and any(r.startswith("p") for r in current):
+    if in_game and role in PRIVILEGED_CLAIM and any(is_player(r) for r in current):
         log_conflict("拒絕：對局進行中，玩家 %s（session %s）試圖認領 %s" % (
             "、".join(current), session_id, role))
         print("拒絕：對局進行中，已登記為玩家（%s）的 session 不能認領 %s。\n"

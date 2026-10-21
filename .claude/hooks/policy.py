@@ -6,10 +6,12 @@
 `.claude/skills/ur/scripts/claim_role.py` 維護，寫在 `game-state/public/roster.json`。
 那支腳本刻意**不 import 這個模組** —— 它由玩家 session 執行，而讀取
 `.claude/hooks/` 本身受 CONFIG 規則保護，import 會被自己擋下。
-代價是角色代號的定義在兩處各有一份，改動時兩邊都要改。
+所以角色代號的唯一來源放在對方那邊：`.claude/skills/ur/scripts/roles.py`，
+兩支都 import 它（hook 讀那裡不受限制）。
 """
 import os
 import re
+import sys
 
 # 專案根目錄 = 本檔案的祖父目錄（.claude/hooks/policy.py → wolf/）
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,7 +28,8 @@ CONFLICT_LOG = os.path.join(PUBLIC_DIR, "roster-conflicts.log")
 # SendMessage 規則靠它認得上帝的各種寫法。
 SESSIONS = os.path.join(PUBLIC_DIR, "roster-sessions.json")
 
-VALID_ROLES = ["god", "reporter", "maintainer"] + ["p%d" % i for i in range(1, 10)]
+sys.path.insert(0, os.path.join(PROJECT_DIR, ".claude", "skills", "ur", "scripts"))
+from roles import VALID_ROLES, is_player  # noqa: E402,F401  角色代號的唯一來源
 
 # 完全放行的角色。maintainer 是給「不在對局中、正在維護這套系統的人」用的。
 PRIVILEGED = ("god", "maintainer")
@@ -188,10 +191,6 @@ def evaluate(role, tool_name, tool_input):
 # 是正當的，內文掃描會把它擋掉。
 _SOCK = re.compile(r"cc-msg-[0-9a-f]+", re.I)
 _REF = re.compile(r"\[([0-9a-f]{4,})\]\s*$", re.I)
-
-
-def is_player(role):
-    return bool(role) and re.fullmatch(r"p[1-9]", role) is not None
 
 
 def god_aliases(sessions):
