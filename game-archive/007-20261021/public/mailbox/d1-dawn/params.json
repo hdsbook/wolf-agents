@@ -1,0 +1,11 @@
+{
+  "day": "1",
+  "death_headline": "平安夜",
+  "death_announcement": "昨夜是平安夜，無人死亡。",
+  "alive_list": "P1 P2 P3 P4 P5 P6 P7 P8 P9",
+  "dead_list": "無",
+  "hunter_shot_line": null,
+  "start_seat": "P5",
+  "direction": "逆序",
+  "speech_order": "P5 → P4 → P3 → P2 → P1 → P9 → P8 → P7 → P6"
+}

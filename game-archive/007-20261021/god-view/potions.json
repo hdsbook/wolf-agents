@@ -1,0 +1,25 @@
+{
+  "antidote_used": true,
+  "poison_used": true,
+  "hunter_shot": false,
+  "alive": [
+    "P1",
+    "P2",
+    "P6",
+    "P8"
+  ],
+  "dead": [
+    "P5",
+    "P9",
+    "P3",
+    "P7",
+    "P4"
+  ],
+  "day": 3,
+  "phase": "第 3 夜結算完成・勝負已達成",
+  "result": {
+    "winner": "狼人",
+    "reason": "屠邊（平民全滅）",
+    "day": 3
+  }
+}

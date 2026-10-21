@@ -1,0 +1,206 @@
+﻿<meta charset="utf-8"><title>狼人殺戰況</title><style>
+:root{
+  --bg:#f7f6f3; --panel:#ffffff; --ink:#1c1b19; --muted:#6b6862;
+  --line:#e0ddd6; --accent:#8a6d3b; --good:#2f6f4f; --evil:#a83a2c;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#16150f; --panel:#1f1e17; --ink:#ece8dd; --muted:#9a958a;
+    --line:#33312a; --accent:#c8a75c; --good:#6fbf92; --evil:#e0705f;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.75 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+header{border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:22px}
+h1{margin:0 0 6px;font-size:26px;letter-spacing:.04em}
+.sub{color:var(--muted);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 26px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  padding:6px 14px;font-size:13px}
+.chip b{color:var(--accent)}
+h2{font-size:17px;margin:34px 0 12px;padding-left:10px;
+  border-left:3px solid var(--accent)}
+/* 欄數綁定座位數（--cols 由 seat_grid 依實際人數寫入），不用 auto-fill。
+   auto-fill 會依可用寬度自己算欄數：1040px 內容寬 ÷ (118+10) = 8 欄，
+   9 個座位就會剩最後一個獨自落到第二列。窄螢幕退成 3 欄 ——
+   3 整除 9，同樣不會出現落單的那一格。 */
+.seats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (min-width:1000px){
+  .seats{grid-template-columns:repeat(var(--cols,9),minmax(0,1fr))}
+}
+.seat{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px}
+.seat .n{font-size:17px;font-weight:700}
+.seat .nick{font-size:13px;color:var(--muted)}
+/* .seat .role 已由 .tag.role-true 取代 —— 真實身分改成標籤，才能跟宣告標籤排在同一列。 */
+.seat.dead{opacity:.45}
+.seat.dead .n::after{content:" X";color:var(--evil)}
+.seat .fate{font-size:11px;color:var(--muted);margin-top:3px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:12px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:rgba(138,109,59,.09);white-space:nowrap}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  margin-bottom:9px;padding:0 14px}
+details[open]{padding-bottom:12px}
+summary{cursor:pointer;padding:11px 0;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+.body p{margin:0 0 11px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;
+  margin-left:7px;vertical-align:middle;font-weight:700}
+.tag.g{background:rgba(47,111,79,.16);color:var(--good)}
+.tag.e{background:rgba(168,58,44,.16);color:var(--evil)}
+.banner{margin:18px 0 4px;padding:12px 16px;border-radius:8px;font-size:16px;
+  border:1px solid var(--line)}
+.banner b{font-size:19px}
+.banner.good{background:rgba(47,111,79,.12);color:var(--good)}
+.banner.evil{background:rgba(168,58,44,.12);color:var(--evil)}
+.night{border-left:3px solid var(--accent);padding-left:13px;margin-bottom:16px}
+.night h3{margin:0 0 7px;font-size:15px}
+.kv{font-size:13px;color:var(--muted)}
+.kv b{color:var(--ink)}
+.claims{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.claims .tag{margin-left:0}
+.tag.c-seer{background:rgba(41,128,185,.16);color:#2980b9}
+.tag.c-witch{background:rgba(142,68,173,.16);color:#8e44ad}
+.tag.c-hunter{background:rgba(211,84,0,.16);color:#d35400}
+.tag.c-god{background:rgba(201,167,92,.20);color:var(--accent)}
+.tag.c-vill{background:rgba(127,140,141,.20);color:#7f8c8d}
+.tag.c-good{background:rgba(47,111,79,.16);color:var(--good)}
+.tag.c-wolf{background:rgba(168,58,44,.16);color:var(--evil)}
+/* 真實身分：有外框。宣告：無框。一眼分得出哪個是事實、哪個是他自己說的。 */
+.tag.role-true{background:transparent;border:1px solid currentColor;font-weight:800}
+.tag.hj{box-shadow:inset 3px 0 0 var(--evil)}
+.tag.hj::after{content:" ↯";color:var(--evil)}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]) .tag.c-seer{color:#6bb3e0}
+  :root:not([data-theme=light]) .tag.c-witch{color:#c08fe0}
+  :root:not([data-theme=light]) .tag.c-hunter{color:#f0975a}
+  :root:not([data-theme=light]) .tag.c-vill{color:#a8b2b3}
+}
+footer{margin-top:50px;padding-top:14px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:12px}
+</style>
+<div class="wrap"><header><h1>狼人殺戰況</h1>
+<div class="sub">產生時間 2026-10-21 22:38 ｜ 資料來源 game-state</div></header>
+<div class="banner evil"><b>狼人陣營獲勝</b>　—— 屠邊（平民全滅）（第 3 天）</div>
+<div class="bar">
+<div class="chip">第 <b>3</b> 天</div>
+<div class="chip">階段 <b>第 3 夜結算完成・勝負已達成</b></div>
+<div class="chip">存活 <b>4</b> / 9</div>
+<div class="chip">狼 <b>2</b> / 3 存活</div>
+</div>
+<h2>座位</h2>
+<div class="seats" style="--cols:9">
+<div class="seat">
+<div class="n">P1</div>
+<div class="claims"><span class="tag role-true" style="color:#8e44ad">女巫</span><span class="tag c-witch">D2 女巫</span></div>
+</div>
+<div class="seat">
+<div class="n">P2</div>
+<div class="claims"><span class="tag role-true" style="color:#d35400">獵人</span><span class="tag c-hunter">D2 獵人</span></div>
+</div>
+<div class="seat dead">
+<div class="n">P3</div>
+<div class="claims"><span class="tag role-true" style="color:#c0392b">狼人</span><span class="tag c-seer hj">D1 預言家</span></div>
+<div class="fate">悍跳</div>
+</div>
+<div class="seat dead">
+<div class="n">P4</div>
+<div class="claims"><span class="tag role-true" style="color:#7f8c8d">村民</span><span class="tag c-vill">D1 平民</span></div>
+</div>
+<div class="seat dead">
+<div class="n">P5</div>
+<div class="claims"><span class="tag role-true" style="color:#7f8c8d">村民</span><span class="tag c-vill">D1 平民</span></div>
+</div>
+<div class="seat">
+<div class="n">P6</div>
+<div class="claims"><span class="tag role-true" style="color:#c0392b">狼人</span></div>
+</div>
+<div class="seat dead">
+<div class="n">P7</div>
+<div class="claims"><span class="tag role-true" style="color:#7f8c8d">村民</span></div>
+</div>
+<div class="seat">
+<div class="n">P8</div>
+<div class="claims"><span class="tag role-true" style="color:#c0392b">狼人</span><span class="tag c-vill">D2 平民</span></div>
+</div>
+<div class="seat dead">
+<div class="n">P9</div>
+<div class="claims"><span class="tag role-true" style="color:#2980b9">預言家</span><span class="tag c-seer">D1 預言家</span></div>
+</div>
+</div>
+<h2>時間軸</h2>
+<div class="panel"><div class="kv"><b>第 0 天・開局</b></div>
+<ul><li>洗牌、發牌完成，座位 P1~P9，9 人存活。</li></ul>
+<div class="kv"><b>第 1 夜</b></div>
+<ul><li>夜間行動結束。結果於天亮公告。</li></ul>
+<div class="kv"><b>第 1 天</b></div>
+<ul><li>天亮公告：平安夜，無人死亡。存活 9 人。</li><li>發言順序（隨機起始位 P5，逆序）：P5 → P4 → P3 → P2 → P1 → P9 → P8 → P7 → P6</li><li>發言輪結束，9 位全數落檔。</li><li>投票：P5 以 7 票出局（P3 得 2 票），無平票。身份不公布。票型見 `04-votes-day1.md`。</li></ul>
+<div class="kv"><b>第 2 夜</b></div>
+<ul><li>夜間行動結束。結果於天亮公告。</li></ul>
+<div class="kv"><b>第 2 天</b></div>
+<ul><li>天亮公告：昨夜 P3、P9 出局。存活 6 人。</li><li>發言順序（隨機起始位 P8，逆序）：P8 → P7 → P6 → P4 → P2 → P1</li><li>發言輪結束，6 位全數落檔。</li><li>投票：P7 以 5 票出局（P6 得 1 票），無平票。身份不公布。票型見 `04-votes-day2.md`。</li></ul>
+<div class="kv"><b>第 3 夜</b></div>
+<ul><li>夜裡 P4 出局。平民全滅，**狼人陣營屠邊獲勝**。底牌已公開。</li></ul></div>
+<h2>自我介紹</h2>
+<details><summary>P1・<span class="tag role-true" style="color:#8e44ad">女巫</span></summary><div class="body"><p>大家好，我是 P1，習慣先聽完再下判斷，白天會把我看到的邏輯線攤開來講，歡迎直接挑戰我。</p></div></details>
+<details><summary>P2・<span class="tag role-true" style="color:#d35400">獵人</span></summary><div class="body"><p>大家好，我是 P2，習慣先聽完再下判斷，會盯著每個人前後發言是否一致。</p></div></details>
+<details><summary>P3・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>大家好，我是 P3，習慣先聽完再下判斷，比起口號更看重發言前後的邏輯是否一致。這局請多指教。</p></div></details>
+<details><summary>P4・<span class="tag role-true" style="color:#7f8c8d">村民</span></summary><div class="body"><p>大家好，我是 P4。我習慣看票型和發言前後是否一致來找狼，請多指教。</p></div></details>
+<details><summary>P5・<span class="tag role-true" style="color:#7f8c8d">村民</span></summary><div class="body"><p>大家好，我是 P5。我習慣看投票與發言前後是否一致，會盡量把理由講清楚，請多指教。</p></div></details>
+<details><summary>P6・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>大家好，我是 P6。習慣先聽、看投票，再用邏輯說話，不跟風、也不怕被點名。</p></div></details>
+<details><summary>P7・<span class="tag role-true" style="color:#7f8c8d">村民</span></summary><div class="body"><p>大家好，我是 P7。我習慣聽完整輪發言再下判斷，會盯著每個人的票型和前後說法有沒有對得上。</p></div></details>
+<details><summary>P8・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>大家好，我是 P8，習慣先聽、再看票型說話，發言會盡量把邏輯講清楚。</p></div></details>
+<details><summary>P9・<span class="tag role-true" style="color:#2980b9">預言家</span></summary><div class="body"><p>大家好，我是 P9。我習慣先聽完再下判斷，會盯著每個人前後發言有沒有對得上。</p></div></details>
+<h2>夜晚結果</h2>
+<div class="panel"><div class="kv">第 1 夜　<b>平安夜，無人死亡</b></div>
+<div class="kv">第 2 夜　<b>P9、P3</b></div>
+<div class="kv">第 3 夜　<b>P4</b></div></div>
+<h2>第 1 天</h2>
+<details><summary>P5・<span class="tag role-true" style="color:#7f8c8d">村民</span><span class="tag c-vill">平民</span></summary><div class="body"><p>首位發言，沒有前置資訊，我先講兩個確定的事實。第一，本板空刀不成立，所以昨晚平安夜只有一種解釋：女巫已經用掉解藥。從今晚起，狼刀下去就是真死，好人沒有容錯了。</p><p>第二，正因如此，預言家今天最好就出來報查驗。解藥已空，預言家藏著也只是等著被刀；早跳至少能留下一份查驗和一條警徽流讓大家追。若有人對跳，我會比對雙方查驗對象的選擇理由與後續票型來站邊，不會只看誰先講。女巫我建議先別跳，手上還有毒藥，藏著比較有價值。</p><p>我是平民，首位沒有東西可踩，就提一個請後面每位回答的問題：如果今天沒有預言家跳，你的票準備投給誰、為什麼？只說「先聽聽看」的，我會記下來，明天對照你的實際投票。</p><p>【宣告】平民</p></div></details>
+<details><summary>P4・<span class="tag role-true" style="color:#7f8c8d">村民</span><span class="tag c-vill">平民</span></summary><div class="body"><p>同意 P5 的前提：平安夜在本板只能是解藥已用，今晚起刀刀見血，預言家今天該出來報查驗，女巫繼續藏毒。</p><p>正面回答 P5 的問題：如果今天沒有預言家跳，我的票會投給全場發言最空、只喊口號不給具體歸票對象的人。目前我只聽到 P5 一位，P5 首位能把規則推論講清楚、還主動丟出可追蹤的問題，我暫時不放他在狼坑。但我也記一筆：P5 首位就急著催預言家起跳，若今晚預言家真被刀，這段話我會回頭再看一次。</p><p>我也給後面的人一個具體要求：表態要落到座位號，不要只說「聽完再看」。九份自介幾乎一模一樣，今天才是第一份真資訊。若有人對跳預言家，我會看誰的查驗對象選得有理由、誰的金水在後面發言中最護著他，再決定站邊。</p><p>【宣告】平民</p></div></details>
+<details><summary>P3・<span class="tag role-true" style="color:#c0392b">狼人</span><span class="tag c-seer">預言家</span></summary><div class="body"><p>我是預言家，昨晚查驗 P5，查殺。</p><p>驗 P5 的理由很簡單：首置位的人最容易定調，我想先知道這個調子是誰定的。結果出來再回頭看他的發言就很清楚了 —— 平安夜之後他第一件事是催預言家「今天就出來」，女巫「先別跳」。站在狼的角度，這正是最想要的局面：預言家跳出來今晚好刀，女巫藏著代表沒人能保護預言家。他還丟了一個「沒有預言家跳你投誰」的問題，讓後面每個人去追一個不存在的假設，把焦點從他自己身上移開。</p><p>回答 P5 和 P4 的問題：預言家已經跳了，我的票今天投 P5，請大家跟我歸票 P5。P4 說要看查驗對象選得有沒有理由，我上面已經講了；你也說要記一筆 P5 急著催預言家，那一筆現在可以兌現了。</p><p>警徽流：今晚驗 P1，再來 P9。若有人對跳，請把他的查驗對象和我的放在一起比，看誰的理由是從發言出發。</p><p>【宣告】預言家</p></div></details>
+<details><summary>P2・<span class="tag role-true" style="color:#d35400">獵人</span></summary><div class="body"><p>先回答 P5 的問題：今天已經有預言家跳了，這個假設不用再回答。我的票目前跟 P3 走，投 P5。</p><p>理由不是我已經認定 P3 是真的，而是第一天只有一個人跳、而且他交出了能被驗證的東西：查殺對象、選驗理由、警徽流 P1、P9。如果 P3 是悍跳的狼，他等於把一個隊友以外的好人送上台，還把自己的明晚查驗公開綁死，這代價很高。P5 若是好人，請在後面 PK 或明天給出比「催預言家起跳」更有力的好人視角。</p><p>我想提醒後置位：P1 和 P9 是 P3 的警徽流，你們是最該關注的兩位。後面如果有人對跳預言家，請一定要給出查驗對象和理由，我會像 P4 說的，把雙方的選驗理由並排比較再決定站邊。沒有對跳，就請大家把票集中在 P5，不要分散。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P1・<span class="tag role-true" style="color:#8e44ad">女巫</span></summary><div class="body"><p>先回答 P5：預言家已經跳了，那個假設失效；若真沒人跳，我會投發言最空的人，而不是首置位。</p><p>我是 P3 警徽流的第一位，今晚他驗我，我沒意見，結果明天由他報，大家拿來對照。目前只有 P3 一人跳，他交出查殺、選驗理由與明晚驗人順序，這些都是可被後續驗證的東西，我暫時站 P3。但我也提醒：P3 把 P5 催預言家起跳解讀成狼意圖，這條推理偏弱 —— 首置位喊預言家出來，好人也會講。所以真正支撐我的不是那段分析，而是「沒有對跳」這個事實。</p><p>給後置位：P9、P8、P7、P6，若有人要對跳，今天就跳，並交出查驗對象和理由；過了今天才跳的，我會直接視為可疑。沒有對跳，我今天的票給 P5。P5 若是好人，請在 PK 給出比規則推論更有力的身份視角。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P9・<span class="tag role-true" style="color:#2980b9">預言家</span><span class="tag c-seer">預言家</span></summary><div class="body"><p>我是預言家，對跳 P3。昨晚我驗 P1，金水。</p><p>選 P1 的理由：首夜沒有任何發言，我只能從自介選，P1 是唯一主動說「歡迎直接挑戰我」的人，我想先確認這個敢站出來帶節奏的人是哪一邊。結果是好人，所以 P1 今天的發言我可以放心看 —— 他也點出 P3 那段「催預言家就是狼」的推理偏弱，我同意。</p><p>P3 是狼。他給 P5 的查殺理由全是事後解讀發言，但首夜查驗時根本還沒有任何發言，「想知道調子是誰定的」是白天才編得出來的理由。P5 在我眼裡大概率是被狼隊推出來的好人。另外 P3 的警徽流裡有我 P9，狼隊夜裡選刀人時，這條流也替他們圈好了人。</p><p>回答 P1 的要求：我今天就跳，查驗對象和理由都交了。P1、P2，請把我和 P3 的選驗理由並排比。我今天的票給 P3，請大家歸票 P3。今晚警徽流：P5，再來 P2。</p><p>【宣告】預言家</p></div></details>
+<details><summary>P8・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>對跳出現了，我把兩邊並排比。P9 抓 P3「首夜沒有發言，理由是白天編的」，這點成立，我認。但 P9 的理由同樣經不起細看：首夜他選 P1，靠的也只是一句自介，換句話說兩邊首驗都沒有真資訊，比「誰的理由漂亮」意義不大。</p><p>我更在意的是時機。P9 在第六位才跳，前面五份發言他全讀過了，P1 剛公開說站 P3、又點出 P3 推理偏弱 —— P9 這時發 P1 金水，等於拿一張成本最低的牌去爭取 P1 這一票。真預言家當然也可能剛好驗 P1，所以我不下死結論，只說 P9 的跳法讓我多一層保留。</p><p>回答 P5 的問題：今天有預言家跳，假設不用答。我今天暫時站 P3，票給 P5；但 P5 若在後面拿出新的好人視角，我願意改。P1 你是兩邊警徽流都繞到的人，今晚之後誰的驗人結果與後續發言對得上，我就站誰。P7、P6，請你們表態要落到座位號。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P7・<span class="tag role-true" style="color:#7f8c8d">村民</span></summary><div class="body"><p>回應 P8 的要求，直接落到座位號：我今天站 P3，票給 P5。</p><p>兩邊首驗理由都是事後補的，這點 P9 抓得對，但他自己的「P1 自介說歡迎挑戰」也一樣薄，這項打平。拉開差距的是時機與成本：P3 第三位就跳，查殺、警徽流全部先交，後面的人讀完才動作；P9 第六位才跳，讀完五份發言，挑了已表態站 P3 的 P1 發金水，這張牌對狼來說成本最低、收益最高。真預言家被刀前搶時間，通常不會拖到第六位。</p><p>但我留一條可驗證的線給明天：P3 今晚驗 P1、P9 已發 P1 金水，兩人對 P1 的結果若明天互相矛盾，就是硬碰硬，我會照結果改票，不護人。也請 P5 明白：今天出局若翻不出新視角，我不會改。P6 你是最後一位，請把你的站邊與票落到座位號。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P6・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>回應 P7、P8：我站 P3，今天的票給 P5。</p><p>兩邊首驗理由都只能靠自介，這點打平，我不在這裡比。我看的是一件 P9 沒處理的事：P9 說 P3 的警徽流「替狼圈好了人」，可是 P9 自己的流是 P5、P2 —— P5 正是被查殺的人。如果 P9 是真預言家，今晚有更多沒資訊的人可以驗，他卻把第一順位留給 P5，等於先替 P5 做好「明天翻成好人」的伏筆。這像是在保 P5，不像在找狼。</p><p>但我不封死。明天兩條線會硬碰硬：P3 今晚驗 P1，P9 已發 P1 金水；P9 若今晚報 P5 是好人，而 P3 對 P1 的結果跟 P9 相反，那就攤牌了。我會照明天的結果改票，不護人。P1 是兩邊都繞到的人，今晚要是 P1 或 P9 倒了，也請大家把刀口跟警徽流對一下。</p><p>【宣告】不表態</p></div></details>
+<div class="panel"><div class="scroll"><table>
+<tr><th>投票者</th><th>投給</th><th>理由</th></tr>
+<tr><td>P1<span class="tag g">女巫</span></td><td>P5<span class="tag g">村民</span></td><td>P9 讀完五份發言才第六位對跳，時機成本最低，我維持站 P3、照發言所說投 P5。</td></tr>
+<tr><td>P2<span class="tag g">獵人</span></td><td>P5<span class="tag g">村民</span></td><td>P3 先跳且先交查殺與警徽流，P9 第六位才跳、挑已站邊的 P1 發金水成本最低，我站 P3。</td></tr>
+<tr><td>P3<span class="tag e">狼人</span></td><td>P5<span class="tag g">村民</span></td><td>我昨晚查殺 P5，維持發言時的歸票不改。</td></tr>
+<tr><td>P4<span class="tag g">村民</span></td><td>P5<span class="tag g">村民</span></td><td>P3 第三位就跳並先交出查殺與警徽流，P9 第六位讀完全場才對跳、發金水給已站 P3 的 P1，我今天站 P3，明天以 P1 的查驗結果對質。</td></tr>
+<tr><td>P5<span class="tag g">村民</span></td><td>P3<span class="tag e">狼人</span></td><td>我是好人，P3 對我發查殺必是悍跳的狼，對跳的 P9 才是真預言家。</td></tr>
+<tr><td>P6<span class="tag e">狼人</span></td><td>P5<span class="tag g">村民</span></td><td>今天只有 P3 先交查殺與警徽流，P9 把被查殺的 P5 排進第一順位驗人像在保他，我先跟 P3 歸票。</td></tr>
+<tr><td>P7<span class="tag g">村民</span></td><td>P5<span class="tag g">村民</span></td><td>P3 先跳、查殺與警徽流全交，P9 讀完五份才跳且警徽流首位留給被查殺的 P5，我站 P3，明天依 P1 結果再校正。</td></tr>
+<tr><td>P8<span class="tag e">狼人</span></td><td>P5<span class="tag g">村民</span></td><td>今天只有 P3 先交出查殺與完整警徽流，P9 第六位才跳、挑已站邊的 P1 發金水，我暫站 P3。</td></tr>
+<tr><td>P9<span class="tag g">預言家</span></td><td>P3<span class="tag e">狼人</span></td><td>我是真預言家，P3 悍跳發假查殺，他就是狼。</td></tr>
+</table></div>
+<div class="kv" style="margin-top:10px">- P5：7 票（P1、P2、P3、P4、P6、P7、P8）<br>- P3：2 票（P5、P9）</p><p>P5 得票最高，無平票，P5 出局。身份不公布。</div>
+</div>
+<h2>第 2 天</h2>
+<details><summary>P8・<span class="tag role-true" style="color:#c0392b">狼人</span><span class="tag c-vill">平民</span></summary><div class="body"><p>雙死，而且死的正是對跳的兩個人。解藥第一夜就用掉了，P3 這一刀不可能是狼刀之外再被救，最合理的解讀是：狼刀 P9，女巫毒 P3（或有獵人開槍）。不管哪一種，好人的手都伸向了 P3 —— 我昨天站錯邊，P9 才是真預言家，P5 是被我們一起推出去的好人。這筆票我認，不找藉口。</p><p>那剩下兩隻狼就在我們六個人裡。P1 是 P9 的金水，我先放下。我想看的是昨天誰在替 P3 加碼「歸票」：P2 第四位就喊「請大家把票集中在 P5，不要分散」，那是全場最早、最明確的集票動作；P7 則把 P9「拖到第六位才跳」講成真預言家不會做的事，這條推論把 P9 的對跳整個打掉。這兩位我今天會重點聽。</p><p>女巫若毒的是 P3，你已經沒藥了，可以考慮今天站出來替好人定位，但時機你自己判斷。我今天的票暫時給 P2，後面的人請正面回答：昨天站 P3，是讀到什麼才站的？</p><p>【宣告】平民</p></div></details>
+<details><summary>P7・<span class="tag role-true" style="color:#7f8c8d">村民</span></summary><div class="body"><p>先回答 P8：我昨天站 P3，是因為他第三位先跳、查殺警徽流全交，P9 讀完五份才跳、金水發給已站邊的 P1。這是我的判斷，結果明天仍可能被證明錯，我不迴避。</p><p>但 P8 今天的讀法有一個跳步：雙死不等於「好人的手伸向 P3」。解藥已空，雙死是狼刀＋女巫毒、或狼刀獵人＋開槍。昨天全場 7 比 2 站 P3，女巫若跟著多數判斷，毒的更可能是 P9；那狼刀的就是 P3 —— 狼最想刀的正是真預言家。兩種讀法至少對稱，P8 卻直接定案 P9 真、P3 狼，順手把 P2 和我圈成狼坑。昨天你自己也站 P3、票投 P5，今天第一個翻邊、第一個點人，這個轉向太快。</p><p>所以我請女巫今天出來：解藥第一夜已用、毒昨晚若用掉也已空，你沒有再藏的價值，報出你毒了誰，雙死就能拆開。拆開之前，我的票暫時給 P8。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P6・<span class="tag role-true" style="color:#c0392b">狼人</span></summary><div class="body"><p>先回答 P8：我昨天站 P3，讀到的是時機與成本 —— 他先跳、先交查殺和警徽流，我也挑了 P9 把 P5 排進第一順位的毛病。現在看，那條讀法錯了：雙死落在對跳的兩人身上，P3 不管是被毒還是被槍帶走，好人的手都指向他，P9 大概率是真預言家。我認錯，P1 這張金水我也跟著放下。</p><p>但 P7 的「對稱讀法」我不接受。女巫跟著 7 比 2 的多數毒 P9，前提是她把毒藥押在一個自己剛投過票支持的對跳上 —— 用全局唯一一瓶毒去毒「多數已站邊、白天就能處理」的人，不合理。毒藥是拿來處理白天推不動的人，那個人是 P3。P7 拿一個不成立的對稱，第一件事是把票轉到第一個認錯、第一個點人的 P8，這比 P8 轉得快更讓我在意。</p><p>P2 昨天喊集票，我記下；但今天我先聽 P2 怎麼解釋。我今天的票暫時給 P7。女巫若出來，雙死拆開後我照結果改。</p><p>【宣告】不表態</p></div></details>
+<details><summary>P4・<span class="tag role-true" style="color:#7f8c8d">村民</span><span class="tag c-vill">平民</span></summary><div class="body"><p>先回答 P8：我昨天站 P3，讀的是時機 —— 他先跳、先交查殺與警徽流，P9 讀完全場才跳。我說過今天以 P1 的結果對質，現在兩人都死了，那條線斷了，我承認昨天那票押錯的機率不小。</p><p>雙死要拆，關鍵是死因。P7 說對稱，P6 說毒藥不會拿去毒多數已站邊的人，我認為 P6 這點比較站得住：女巫毒 P9，等於替一個白天就能推的人花掉唯一一瓶毒。但還有第三種：狼刀獵人、獵人開槍。所以我和 P7 一樣請女巫、也請獵人今天出來 —— 解藥已空，女巫手上最多剩一瓶毒，藏著的價值遠低於把雙死拆開。</p><p>在拆開之前，我的傾向是 P9 真、P3 狼、P5 是被我們推出去的好人。那剩兩狼在 P2、P4、P6、P7、P8 裡（P1 是 P9 金水，我先放下）。我最在意 P7：全場都在認錯時，他第一個提出能把 P3 洗白的讀法，接著把票轉向認錯的 P8。我今天的票暫時給 P7；女巫或獵人報出結果與此相反，我照結果改。</p><p>【宣告】平民</p></div></details>
+<details><summary>P2・<span class="tag role-true" style="color:#d35400">獵人</span><span class="tag c-hunter">獵人</span></summary><div class="body"><p>我是獵人，今天跳出來替大家拆掉一種讀法：我還活著、沒開過槍，所以昨晚的雙死只剩一種成因 —— 狼刀一人、女巫毒一人。「獵人開槍」這條請從桌上拿掉。</p><p>回答 P8：我昨天站 P3，理由跟多數人一樣是時機與成本，也寫在逐字稿裡。「請大家把票集中」是我怕對跳讓票分散，這筆我認錯但不認狼。P8 今天第一個翻邊、第一個點人，點的又是可能拆開局面的獵人，我記下。</p><p>現在拆雙死只差一步：女巫，請報出你毒了誰。你毒的那個若是 P3，P9 真、P5 是好人，剩兩狼就在 P4、P6、P7、P8 之中；若你毒的是 P9，就反過來。我的票等女巫結果再定；若女巫不出來，我暫時跟 P6、P4 看 P7。另外提醒：要投我、或今晚刀我，我都能帶走一人，槍口我會對準最可疑的那位。</p><p>【宣告】獵人</p></div></details>
+<details><summary>P1・<span class="tag role-true" style="color:#8e44ad">女巫</span><span class="tag c-witch">女巫</span></summary><div class="body"><p>我是女巫，正面回應 P7、P4、P2 的要求，把雙死拆開。第一夜被刀的是我自己，我用解藥自救，所以平安夜；昨晚狼刀 P9，我用毒藥毒了 P3。兩瓶藥都已用完，今晚我沒有任何自保能力，所以現在說。</p><p>毒 P3 的理由：解藥已空是全場公開資訊，狼自刀 P9 沒有任何收益，所以 P9 是好人，與他對跳的 P3 必是悍跳狼。P9 給我的金水也對 —— 我確實是好人。我昨天站錯邊、投了 P5，這筆我認。</p><p>現在剩兩狼在 P2、P4、P6、P7、P8 裡。若 P2 的獵人為真，就在 P4、P6、P7、P8。P7 是今天唯一提出「女巫可能毒 P9」對稱讀法的人，現在可以直接收回 —— 那條讀法替 P3 洗白，然後把票轉向第一個認錯的 P8。我今天的票給 P7。真獵人若不是 P2，現在就出來對跳。</p><p>【宣告】女巫</p></div></details>
+<div class="panel"><div class="scroll"><table>
+<tr><th>投票者</th><th>投給</th><th>理由</th></tr>
+<tr><td>P1<span class="tag g">女巫</span></td><td>P7<span class="tag g">村民</span></td><td>我是女巫、親手毒了 P3，P7 是唯一提出「女巫毒 P9」對稱讀法替 P3 洗白、再把票轉向認錯者的人。</td></tr>
+<tr><td>P2<span class="tag g">獵人</span></td><td>P7<span class="tag g">村民</span></td><td>女巫 P1 已報毒 P3、雙死拆開，P7 是唯一提出替 P3 洗白的對稱讀法並轉票打認錯者的人。</td></tr>
+<tr><td>P4<span class="tag g">村民</span></td><td>P7<span class="tag g">村民</span></td><td>P1 報毒 P3、P2 報獵人未開槍，雙死已拆開，P3 是狼；P7 是全場唯一替 P3 留對稱讀法、再把票轉向認錯的 P8 的人，維持發言所說投 P7。</td></tr>
+<tr><td>P6<span class="tag e">狼人</span></td><td>P7<span class="tag g">村民</span></td><td>女巫已報毒 P3，P7 是唯一提出能替 P3 洗白的對稱讀法、又把票轉向認錯者的人，我維持發言所說投他。</td></tr>
+<tr><td>P7<span class="tag g">村民</span></td><td>P6<span class="tag e">狼人</span></td><td>女巫 P1 報毒 P3，我收回對稱讀法、接受 P3 是狼；但昨天替 P3 額外編出「P9 保 P5」新論點的是 P6，今天又帶頭把票從 P8 轉到我這個村民身上，最像 P3 的隊友。</td></tr>
+<tr><td>P8<span class="tag e">狼人</span></td><td>P7<span class="tag g">村民</span></td><td>女巫已報毒 P3，P7 是全場唯一提出「女巫毒 P9」來替 P3 洗白、再把票轉向認錯者的人。</td></tr>
+</table></div>
+<div class="kv" style="margin-top:10px">- P7：5 票（P1、P2、P4、P6、P8）<br>- P6：1 票（P7）</p><p>P7 得票最高，無平票，P7 出局。身份不公布。</div>
+</div>
+<footer>此為終局公開版。勝負已定，底牌已於終局公布，故一併列出；夜間行動仍不收錄。</footer></div>

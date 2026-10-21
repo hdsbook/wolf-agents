@@ -1,0 +1,11 @@
+{
+  "day": "2",
+  "death_headline": "昨夜 P3、P9 出局",
+  "death_announcement": "昨夜出局的是：P3、P9。",
+  "alive_list": "P1 P2 P4 P6 P7 P8",
+  "dead_list": "P3 P5 P9",
+  "hunter_shot_line": null,
+  "start_seat": "P8",
+  "direction": "逆序",
+  "speech_order": "P8 → P7 → P6 → P4 → P2 → P1"
+}

@@ -1,0 +1,7 @@
+{
+  "day": "2",
+  "alive_list": "P1 P2 P4 P6 P7 P8",
+  "dead_list": "P3 P5 P9",
+  "speech_order": "P8 → P7 → P6 → P4 → P2 → P1",
+  "filed_list": "d2-seq-P8.md"
+}
