@@ -5,6 +5,8 @@ description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/N
 
 # /god-archive —— 歸檔一局
 
+終局的全貌見 `agent-reference/god/07-endgame.md`。本 skill 只管「把一局從 `game-state/` 搬進 `game-archive/`、清出乾淨骨架」。
+
 ## 什麼時候跑
 
 | 時機 | 情況 |
@@ -12,13 +14,7 @@ description: 狼人殺・把結束的一局從 game-state/ 搬進 game-archive/N
 | **終局後** | `/god-endgame` 走完，戰報、稽核、MVP、最終報表都寫好了 |
 | **開局前** | `/god-open` 第 0 步的殘留檢查發現 `game-state/` 還有上一局 |
 
-## 為什麼歸檔＝解除保護
-
-對局中，上帝視角放在 `game-state/secret/`，由 hook 擋下非 god／reporter 的存取。
-
-**歸檔的動作就是把資料搬出保護區。** 語意上正好等於「這一局結束了，底牌公開了」——
-所以存取控制規則永遠只需要認得 `game-state/secret/` 一個路徑，
-**不必為歷史對局寫任何例外規則**。
+**歸檔＝解除保護**（說明見 `07-endgame.md`「歸檔就是解密」）。
 
 ## 步驟
 

@@ -5,6 +5,8 @@ description: 狼人殺・白天投票、唱票、平票 PK 與出局結算。含
 
 # /god-vote —— 投票
 
+一輪對局的流程見 `agent-reference/god/02-round.md`，平票與獵人的裁決見 `05-arbitration.md`。本 skill 只管「投票（階段 6）＋出局結算＋勝負檢查」。
+
 ## 1. 收票
 
 **參數廣播**：用 `params.py vote --day N` 產 `game-state/public/mailbox/d{N}-vote/params.json`
@@ -39,16 +41,14 @@ python .claude/skills/god-dispatch/params.py tally --day N --votes <票.json> [-
 
 同時寫進 `public/04-votes-dayN.md`。
 
-**落檔後立刻通知 reporter**：
+落檔後依 `agent-reference/shared/02-reporter-dispatch.md` 通知 reporter。這一則照抄：
 
 ```
 SendMessage → reporter
 「第 N 天票型已公布，請執行 /reporter-build。」
 ```
 
-**兩份都產。** 票型與理由已經用 `tally` 並行公告給全場，公開版跟上不會洩漏任何東西。
-這一則不要省 —— 有 PK 時，從這裡到第 7 步的收尾中間隔著 PK 發言、二次投票與出局結算，
-報表會停在天亮狀態很久。
+**這一則不要省**（有 PK 時報表會停在天亮狀態很久）。
 
 ## 4. 平票 → PK
 
@@ -56,15 +56,16 @@ SendMessage → reporter
 2. 平票者**各再發言一次**（用 `ask_speak` 模板，標明是 PK 發言）
    - **後發言者有後手優勢**，這是規則的一部分，照順序跑即可
 3. **其餘玩家重新投票**（平票者本人不投）
-4. 收齊後再唱一次票，把 PK 發言追加進 `03-speeches-dayN.md`、二次票型追加進 `04-votes-dayN.md`
-5. **落檔後通知 reporter**：
+4. 收齊後再唱一次票，二次票型追加進 `04-votes-dayN.md`。
+   PK 發言你不寫檔 —— 由 reporter 用 `/reporter-collect <N> pk` 併進 `03-speeches-dayN-pk.md`（見 `/god-day`〈平票 PK 怎麼跑〉）
+5. 落檔後依 `agent-reference/shared/02-reporter-dispatch.md` 通知 reporter。這一則照抄：
    ```
    SendMessage → reporter
    「第 N 天 PK 已唱票，請執行 /reporter-build。」
    ```
 6. **PK 再度平票 → 本輪流局，無人出局**
 
-> 上一局實際發生過一次 PK 二度平票流局。好人因此白讓一輪，那是決定勝負的三個瞬間之一 —— **流局是真實且代價高昂的結果，不要為了「有個結論」而擅自加碼裁決。**
+**流局是真實且代價高昂的結果，不要為了「有個結論」而擅自加碼裁決**（實例見 `05-arbitration.md`「白天投票平票」）。
 
 ## 5. 出局結算
 
@@ -80,24 +81,24 @@ elif not gods_alive or not villagers_alive:   狼人屠邊勝
 else:                                         天數 +1
 ```
 
-**投出最後一名平民的瞬間就是屠邊。** 這是最容易漏掉的結局。
+**投出最後一名平民的瞬間就是屠邊。** 這是最容易漏掉的結局（見 `05-arbitration.md`「勝負判定」）。
 
 **達成勝負時，先做兩件事再進 `/god-endgame`：**
 
 1. 把結果寫進 `secret/potions.json` 的 `result` 欄位：
    `{"winner": "好人|狼人", "reason": "屠邊（平民全滅）", "day": N}`
-2. ```
+2. 落檔後依 `agent-reference/shared/02-reporter-dispatch.md` 通知 reporter。這一則照抄：
+   ```
    SendMessage → reporter
    「勝負已達成，請執行 /reporter-build spoiler。」
    ```
-   **只產劇透版** —— `game_over` 這時還沒公告，公開版一旦揭底，玩家會從報表先看到底牌。
 
 ## 7. 收尾
 
 1. 把票型**追加**進 `secret/nightlog.json` 的 `day_votes` 陣列（**累積式，不可覆寫**）
 2. 更新 `secret/potions.json`（存活/死亡名單、獵人開槍狀態、天數、階段）
 3. 更新 `public/02-status.md` 與 `01-timeline.md`，寫上 `04-votes-dayN.md`
-4. **通知 reporter 重建報表**：
+4. 落檔後依 `agent-reference/shared/02-reporter-dispatch.md` 通知 reporter。這一則照抄：
    ```
    SendMessage → reporter
    「第 N 天投票已結算，請執行 /reporter-build。」

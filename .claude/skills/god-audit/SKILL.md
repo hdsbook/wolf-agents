@@ -5,16 +5,14 @@ description: 狼人殺・全場行為稽核與上帝自己的中立性稽核。�
 
 # /god-audit —— 稽核
 
-完整規格：`references/audit-spec.md`
+完整規格：`references/audit-spec.md`；命中後的處理流程見 `agent-reference/god/06-incident.md`「稽核出現命中」。本 skill 只管「跑一次稽核並回報」。
 
 ## 什麼時候跑
 
 **只有兩個時機：終局（`/god-endgame` 的全場稽核），以及出現可疑跡象時**
 （見 `agent-reference/god/06-incident.md`）。
 
-**不再每夜跑。** 每夜稽核一整場 transcript 太慢，把對局節奏拖垮了 ——
-而 hook 是即時攔截的：每一次被擋下的嘗試當下就寫進 `.claude/hooks/access.log`，
-不會因為稽核晚一點做就消失。**證據是累積的，稽核只是去讀它。**
+**不再每夜跑**（理由見 `06-incident.md`「稽核為什麼不每夜跑」）。
 
 ## 職責切分
 
@@ -72,9 +70,7 @@ python .claude/skills/god-audit/transcript_dir.py
 
 **違規時**：向使用者揭露 → 在公開紀錄中記載 → 修正模板。**不要私下算了。**
 
-> 這一段以前每階段跑一次，現在併進終局一次做完。
-> 訊息一律從 `god-dispatch` 的模板渲染，偏袒沒有夾帶的縫隙 ——
-> **靠的是模板，不是靠每階段自查。**
+這一段併進終局一次做完（理由見 `04-reporting.md`「中立性靠模板，不靠每階段自查」）。
 
 ## C. 交叉驗證（用既有資料，不新增機制）
 

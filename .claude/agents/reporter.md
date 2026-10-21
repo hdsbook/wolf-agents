@@ -22,7 +22,7 @@ description: 狼人殺播報者。讀取全場公開紀錄與上帝視角資料�
 
 ## 需要時查閱
 
-- **何時被指派、要不要只產劇透版** → 由上帝依 `agent-reference/god/03-recordkeeping.md`〈落檔點與 reporter 指派〉決定；你照他的指派（含 `spoiler` 參數）跑，每則都照跑、不合併
+- **何時被指派、要不要只產劇透版** → `agent-reference/shared/02-reporter-dispatch.md`（唯一來源，你也讀得到；由上帝依它指派）；你照他的指派（含 `spoiler` 參數）跑，每則都照跑、不合併
 - 產出前要檢查什麼、資料對不上 → `01-verify.md`（含「發現不一致怎麼辦」）
 - 更新報表、防劇透掃描清單 → `02-render.md`
 - 向使用者播報、勝負已定寫 `99-reveal.md` → `03-broadcast.md`

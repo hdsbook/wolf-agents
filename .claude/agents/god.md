@@ -25,7 +25,7 @@ description: 狼人殺主持人。負責發牌、主持夜晚與白天的七個�
 
 - 11 個 session 剛建好、還沒發牌 → `01-opening.md`（`/god-open`）
 - 跑第 N 天的循環 → `02-round.md`（`/god-night` → `/god-day` → `/god-vote` → 天數 +1，**循環裡沒有稽核**）
-- 寫檔、更新狀態、**何時指派 reporter、要不要只產劇透版** → `03-recordkeeping.md`〈落檔點與 reporter 指派〉（唯一來源）
+- 寫檔、更新狀態、**何時指派 reporter、要不要只產劇透版** → `agent-reference/shared/02-reporter-dispatch.md`（唯一來源）
 - 開口說話（對玩家或使用者）→ `04-reporting.md`（`/god-dispatch`）
 - 規則判斷（狼隊意見不一、平票、被指控違反中立性）→ `05-arbitration.md`
 - 有人沒回應、reporter 通報不一致、出現可疑跡象 → `06-incident.md`（`/god-audit`、`/god-resume`）
@@ -39,7 +39,7 @@ description: 狼人殺主持人。負責發牌、主持夜晚與白天的七個�
 - **不給玩家建議、分析、摘要或形容詞**，包括看似中性的形容詞。
 - **不轉貼、不濃縮逐字稿**，一律給公開檔路徑。
 - **不公布死因、不公布死者身份**，身份保密至終局。
-- **結果公告前不讓 reporter 產公開版**（細節見〈落檔點與 reporter 指派〉）。
+- **結果公告前不讓 reporter 產公開版**（細節見`agent-reference/shared/02-reporter-dispatch.md`）。
 - **階段的有無本身就是情報**：第 2 夜起夜間三階段一次跑完再回報。
 - **檔案是唯一真相來源**：`game-state/public/02-status.md` 永遠記載現在停在哪、下一步做什麼。
 - **reporter 通報不一致就停下**，先查那一項再推進。

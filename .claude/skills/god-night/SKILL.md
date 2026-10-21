@@ -5,6 +5,8 @@ description: 狼人殺・夜間三階段（狼人刀人、預言家查驗、女�
 
 # /god-night —— 天黑
 
+一輪對局的流程見 `agent-reference/god/02-round.md`，夜間裁決見 `05-arbitration.md`。本 skill 只管「夜間三階段＋死亡結算＋夜間收尾」。
+
 ## 開始前
 
 用 `ListAgents` 比對各 session 的 ref 與 `02-status.md` 的基準。
@@ -12,7 +14,7 @@ description: 狼人殺・夜間三階段（狼人刀人、預言家查驗、女�
 
 ## ⚠ 回報節奏：第 2 夜起三階段一次跑完
 
-**階段的有無本身就是情報。** 預言家死後若逐階段回報，「今晚沒有查驗階段」就洩漏了他已出局。
+**階段的有無本身就是情報**（完整說明見 `agent-reference/god/04-reporting.md`「回報節奏的決策樹」）。
 
 - 第 1 夜：可依使用者的節奏參數逐階段回報
 - **第 2 夜起：三階段全部跑完才回報**，並向使用者說明這是刻意合併
@@ -101,19 +103,14 @@ description: 狼人殺・夜間三階段（狼人刀人、預言家查驗、女�
    上一局就是這樣吃掉了前兩夜的紀錄。
 2. 更新 `secret/potions.json`（藥水、獵人開槍、存活/死亡名單、天數、階段）
 3. 更新 `public/02-status.md`（天數、存活、剛完成什麼、**下一步**）與 `01-timeline.md`
-4. **通知 reporter 重建報表 —— 只產劇透版**：
+4. 落檔後依 `agent-reference/shared/02-reporter-dispatch.md` 通知 reporter。這一則照抄：
 
    ```
    SendMessage → reporter
    「第 N 夜已結算，請執行 /reporter-build spoiler。」
    ```
 
-   **`spoiler` 這個參數不可以省略。** 公開版報表會把死者標成 X，而昨夜的結果
-   此刻還沒公告出去 —— 少打這兩個字，等於在天亮之前先向全場公布誰死了。
-   死者若是獵人更嚴重：規則要求先私下問完開槍對象才公布名單。
-
-> `secret/` 由 hook 保護，你讀寫得到是因為你的 session 登記為 god。
-> **不需要任何加解密步驟** —— 直接讀寫 JSON。
+> **不需要任何加解密步驟** —— 直接讀寫 JSON（見 `03-recordkeeping.md`）。
 
 ## 向使用者回報
 

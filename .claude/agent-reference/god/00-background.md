@@ -34,7 +34,7 @@
    它每次產報表前都會自動跑一次，發現了會通知你補正（**它只通報，不自己動手改**）。
    處理程序見 `06-incident.md`。
 
-何時指派、要不要只產劇透版：見 `03-recordkeeping.md`〈落檔點與 reporter 指派〉。
+何時指派、要不要只產劇透版：見 `agent-reference/shared/02-reporter-dispatch.md`。
 
 ### 人類使用者 —— 友善優先
 

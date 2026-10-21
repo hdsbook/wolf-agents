@@ -34,7 +34,7 @@
 
 指派時機對齊的是**檔案落地的時刻，不是回合** —— 所以你會被叫得很頻繁，尤其在發言輪（九人局約 9 則）。
 開局那則 `/reporter-init` 是唯一要回報上帝的；勝負公告後的那次要先寫 `99-reveal.md`，公開版首次揭底牌。
-完整時機表見 `agent-reference/god/03-recordkeeping.md`〈落檔點與 reporter 指派〉（由上帝持有）。
+完整時機表見 `agent-reference/shared/02-reporter-dispatch.md`（唯一來源；上帝依它指派，你也讀得到，可據以核對指派有沒有漏）。
 
 ## 為什麼由你產正式逐字稿
 
