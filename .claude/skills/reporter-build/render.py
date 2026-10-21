@@ -92,7 +92,9 @@ def parse_players(md):
     畫面上那一行就不顯示。舊局歸檔的兩欄格式仍然讀得出來。
     """
     out = {}
-    for m in re.finditer(r"^\|\s*(P[1-9])\s*\|(?:\s*([^|]*?)\s*\|)?", md, re.M):
+    # 只比對同一行內的空白：用 \s* 會跨過換行吃掉下一行開頭的「|」，
+    # 單欄名冊因此每兩行漏一行（P2、P4、P6、P8 消失）。
+    for m in re.finditer(r"^\|[ \t]*(P[1-9])[ \t]*\|(?:[ \t]*([^|\r\n]*?)[ \t]*\|)?", md, re.M):
         out[m.group(1)] = (m.group(2) or "").strip().strip("*")
     return out
 
@@ -668,7 +670,7 @@ def build(game_dir, spoiler, roles, alive, dead_reason, seats, day, phase, night
     pub = os.path.join(game_dir, "public")
     claims = collect_claims(pub)
     title = "狼人殺戰況" + ("・上帝視角" if spoiler else "")
-    h = ["<title>%s</title><style>%s</style>" % (title, CSS)]
+    h = ['<meta charset="utf-8"><title>%s</title><style>%s</style>' % (title, CSS)]
     h.append('<div class="wrap"><header><h1>%s</h1>' % title)
     h.append('<div class="sub">產生時間 %s ｜ 資料來源 %s</div></header>'
              % (datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), esc(game_dir)))
@@ -852,7 +854,8 @@ def main():
                     result, potions)
         path = os.path.join(sec, "report-spoiler.html")
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
+        # utf-8-sig：帶 BOM，讓瀏覽器直接開本機檔時不會把中文判錯編碼。
+        with open(path, "w", encoding="utf-8-sig") as f:
             f.write(strip_markers(doc))
         return path
 
@@ -879,7 +882,7 @@ def main():
 
     out_pub = os.path.join(game_dir, "report", "index.html")
     os.makedirs(os.path.dirname(out_pub), exist_ok=True)
-    with open(out_pub, "w", encoding="utf-8") as f:
+    with open(out_pub, "w", encoding="utf-8-sig") as f:
         f.write(strip_markers(pub_doc))
 
     out_spo = write_spoiler()
