@@ -91,19 +91,23 @@ def path_tokens(command):
     out = []
     for t in _TOKEN_SPLIT.split(command):
         t = t.strip("\"'")
-        if not t or t.startswith("-"):
+        # 只有反斜線的 token 是 shell 跳脫（`find ... \( -name x \)`），不是路徑。
+        # 不跳過的話 to_abs 會把它正規化成根目錄「/」，任何保護區都成了它的子孫。
+        if not t or t.startswith("-") or not t.strip("\\"):
             continue
         out.append(t)
     return out
 
 
 def to_abs(target):
+    # normpath 解開「..」：否則 `find game-state/public/..` 看起來不是 game-state 的祖先，
+    # 實際上卻會掃進 secret/。
     t = norm(target)
     if re.match(r"^[a-z]:/", t) or t.startswith("/"):
-        return t
+        return norm(os.path.normpath(t))
     if t.startswith("~"):
-        return norm(os.path.expanduser(target))
-    return norm(os.path.join(PROJECT_DIR, target))
+        return norm(os.path.normpath(os.path.expanduser(target)))
+    return norm(os.path.normpath(os.path.join(PROJECT_DIR, target)))
 
 
 def ancestor_hit(target, role):
