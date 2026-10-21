@@ -86,10 +86,14 @@ def load_json(path):
 
 
 def parse_players(md):
-    """從 00-players.md 的表格取座位與暱稱。"""
+    """從 00-players.md 的表格取座位與顯示名。
+
+    本局已取消暱稱，表格只有座位一欄 —— 這時值是空字串，
+    畫面上那一行就不顯示。舊局歸檔的兩欄格式仍然讀得出來。
+    """
     out = {}
-    for m in re.finditer(r"^\|\s*(P[1-9])\s*\|\s*([^|]+?)\s*\|", md, re.M):
-        out[m.group(1)] = m.group(2).strip().strip("*")
+    for m in re.finditer(r"^\|\s*(P[1-9])\s*\|(?:\s*([^|]*?)\s*\|)?", md, re.M):
+        out[m.group(1)] = (m.group(2) or "").strip().strip("*")
     return out
 
 
@@ -406,7 +410,8 @@ def seat_grid(seats, alive, dead_reason, roles, spoiler, show_roles, claims):
         cls = "seat" if s in alive else "seat dead"
         out.append('<div class="%s">' % cls)
         out.append('<div class="n">%s</div>' % esc(s))
-        out.append('<div class="nick">%s</div>' % quoted(seats[s]))
+        if seats.get(s):
+            out.append('<div class="nick">%s</div>' % quoted(seats[s]))
         # 真實身分永遠是這一列的第一枚標籤，宣告依天數排在它後面。
         # 一眼就能對照「他是什麼」與「他說他是什麼」，順序固定才不必每次重新找。
         cl = claims.get(s) or []

@@ -65,10 +65,14 @@ def read(path):
 
 
 def parse_players(md):
-    """座位 → 暱稱。與 reporter-build/render.py 的 parse_players 同一條規則。"""
+    """座位 → 顯示名。與 reporter-build/render.py 的 parse_players 同一條規則。
+
+    本局已取消暱稱，00-players.md 只有座位一欄 —— 這時值是空字串。
+    舊局歸檔的兩欄格式仍然讀得出來，不要拿掉這個容錯。
+    """
     out = {}
-    for m in re.finditer(r'^\|\s*(P[1-9])\s*\|\s*([^|]+?)\s*\|', md, re.M):
-        out[m.group(1)] = m.group(2).strip().strip('*')
+    for m in re.finditer(r'^\|\s*(P[1-9])\s*\|(?:\s*([^|]*?)\s*\|)?', md, re.M):
+        out[m.group(1)] = (m.group(2) or '').strip().strip('*')
     return out
 
 
@@ -220,7 +224,8 @@ def main():
     parts += ['---', '']
     for s in speeches:
         claim_label = s['claim_raw'] or '未填'
-        title = '## %s・%s【宣告：%s】' % (s['seat'], s['nick'], claim_label)
+        head = s['seat'] + ('・' + s['nick'] if s['nick'] else '')
+        title = '## %s【宣告：%s】' % (head, claim_label)
         parts += [title, '', s['body'], '']
 
     with io.open(md_path, 'w', encoding='utf-8', newline=LF) as f:

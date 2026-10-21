@@ -100,7 +100,7 @@ python .claude/message-templates/render.py notice --params <notice 的參數>
 
 | 欄位 | 從哪裡算出來 |
 |---|---|
-| `alive_count` | 數 `alive_list` 裡的座位 |
+| `alive_count` | 數 `alive_list` 裡的座位。**你自己填了但與它算的不一致，會直接拒絕渲染** |
 | `your_position`／`n` | 這位玩家在 `speech_order` 裡的位置 |
 | `total` | `speech_order` 裡的座位總數 |
 
@@ -137,21 +137,32 @@ python .claude/message-templates/render.py dawn --seat P3 --params game-state/pu
 
 印出來就是完整訊息，四要素一項都不少。渲染失敗他會回報你，**不會自己猜內容**。
 
-## 直送：含機密的那八則
+## 機密的那八則：inline JSON，仍然由玩家自己渲染
 
 `deal`、`night_*`、`hunter_shot` 走這條。**它們的參數本身就是機密**
-（身份牌、隊友名單、查驗結果、今晚被刀者），而且**收件人有時候也是機密** ——
-收到 `night_seer` 的人就是預言家，收到 `hunter_shot` 的人就是獵人。
+（身份牌、隊友名單、查驗結果、今晚被刀者），而且**收件人有時也是機密**
+—— 收到 `night_seer` 的人就是預言家，收到 `hunter_shot` 的人就是獵人。
 
-參數檔在公開區，所以這幾則不能走參數廣播。渲染後直接送出全文：
+所以參數**不能放進公開的 mailbox**。但這不代表要你自己渲染 ——
+**把 JSON 寫進點對點私訊就好，渲染還是玩家做。**
 
-```bash
-python .claude/message-templates/render.py night_wolf_open --params p.json
+```
+【上帝私訊・發牌】P<n>，請自己渲染你的身份牌。參數是機密，不要外洩。
+
+python .claude/message-templates/render.py deal --seat P<n> --params '<這位的 JSON>'
+
+跑不動就對照公開模板自己把值代進去，做法見 `/player-inbox`。
 ```
 
-> 落檔（`--out`）也受同一條限制，而且是**腳本強制**的：
+`render.py --params` **同時接受檔案路徑與 JSON 字串**，所以這一條不需要任何額外機制。
+
+**你自己不要先渲染一遍再貼全文。** 那等於把同一份內容產出兩次，
+九個人就是十八次 —— 舊做法的發牌訊息每則 1953 字，而其中真正機密的
+只有 41～130 字，其餘全是玩家自己讀得到的公開內容。
+
+> 落檔（`--out`）受同一條限制，而且是**腳本強制**的：
 > 可落檔的清單硬編在 `render.py` 的 `FILE_OK` 裡，對其餘 action 一律拒絕、
-> 一個檔都不產生。打錯一個 action 名就被擋下，不必依賴你有沒有讀到這張表。
+> 一個檔都不產生。打錯一個 action 名就被擋下來，不必依賴你有沒有讀到這張表。
 
 ## 渲染後必跑的四項檢查
 

@@ -25,7 +25,8 @@ python .claude/message-templates/render.py <action> --seat P<你的座位> --par
 你的狼隊友：{{teammates}}
 
 ■ 今晚的狼隊長
-**{{leader}}**{{leader_note}}
+**{{leader}}**
+{{leader_note}}
 
 ■ 夜裡只能用暗號
 | 類別 | 可用暗號 |

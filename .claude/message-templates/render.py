@@ -161,11 +161,16 @@ def load_params(raw):
 
 
 def derive(vals, seat, known):
-    """補上能從其他欄位算出來的插槽 —— 上帝就不必逐一列出每個人的值。
+    """補上能從其他欄位算出來的插槽，並回傳對不上的地方。
 
     只推導**算得出來、且只有一個答案**的欄位。沒給 `speech_order` 就不推導，
     寧可讓「插槽沒填」的檢查擋下來，也不要猜一個看起來合理的值。
+
+    **上帝自己填了、但與算出來的不一致時，回報問題、不静默採用任一邊。**
+    舊行為是「他填什麼就印什麼」，於是 `alive_count` 填 5、`alive_list` 給九人時，
+    會印出「存活 5 人：P1 … P9」而沒有任何人發現。
     """
+    problems = []
     order = re.findall(r'P[1-9]', vals.get('speech_order') or '')
     pos = str(order.index(seat) + 1) if seat in order else None
     if pos:
@@ -174,8 +179,16 @@ def derive(vals, seat, known):
                 vals[k] = pos
     if order and 'total' in known and 'total' not in vals:
         vals['total'] = str(len(order))
-    if 'alive_count' in known and 'alive_count' not in vals and vals.get('alive_list'):
-        vals['alive_count'] = str(len(re.findall(r'P[1-9]', vals['alive_list'])))
+    if 'alive_count' in known and vals.get('alive_list'):
+        calc = str(len(re.findall(r'P[1-9]', vals['alive_list'])))
+        given = vals.get('alive_count')
+        if given is None:
+            vals['alive_count'] = calc
+        elif str(given).strip() != calc:
+            problems.append(
+                'alive_count 填了 %s，但 alive_list 裡是 %s 個座位'
+                % (given, calc))
+    return problems
 
 
 def build_batch(action, body, common, recipients):
@@ -193,7 +206,7 @@ def build_batch(action, body, common, recipients):
         # 自動補的 seat 不算使用者給的欄位（廣播型模板可能根本沒有 {{seat}}）
         unknown = sorted(k for k in vals if k not in known)
         vals.setdefault('seat', to)
-        derive(vals, to, known)
+        problems += ['%s：%s' % (to, m) for m in derive(vals, to, known)]
         if unknown:
             problems.append('%s：參數有模板用不到的欄位 %s' % (to, '、'.join(unknown)))
         text, missing = render(body, vals)
