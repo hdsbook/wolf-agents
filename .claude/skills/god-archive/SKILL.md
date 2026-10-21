@@ -96,6 +96,9 @@ roster.json 在 game-state/public/ 底下，清空 game-state/ 會一起清掉�
 要換一批全新的 session，那就讓它跟著清掉，開局時大家重跑 /ur。
 ```
 
+備份寫回時，**`roster-sessions.json` 要跟 `roster.json` 一起**備份寫回 ——
+少了它，hook 認不出上帝，玩家的 SendMessage 會一律以 `SENDMSG_UNVERIFIED` 放行。
+
 **問使用者，不要自己決定。** 兩種都可以，但清掉之後你需要 `secret/` 的話，
 得請他重跑一次 `/ur god`。
 

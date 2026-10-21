@@ -31,7 +31,7 @@ transcript 位置：`python .claude/skills/god-audit/transcript_dir.py` 印出�
 
 ## 三個實測踩過的假陽性
 
-1. **`uds:` 開頭的位址就是上帝的位址。** 玩家回覆時複製 `from` 欄位，所以目標會長成 `uds:\.\pipe\LOCAL\cc-msg-...`。把它當成「非 GOD」會**誤報全場九人違規**。
+1. **`uds:` 開頭的位址就是上帝的位址。** 玩家回覆時複製 `from` 欄位，所以目標會長成 `uds:\.\pipe\LOCAL\cc-msg-...`。把它當成「非 GOD」會**誤報全場九人違規**。上帝的全部別名見 `game-state/public/roster-sessions.json` 的 `god` 項。
 2. **base64 密文會偶然含有 `P5` 之類的字串。** 432 字元的 base64 約有 10% 機率含到任一指定雙字元。判斷密文有無外洩，要看的是**帶引號與冒號的明文結構**（`"P5":`、`wolf_action`），不是裸字串。
 3. **玩家讀 `memory/` 檔可能是重啟後的標準脈絡回復。** 先看時間戳：若在 session 重啟後兩分鐘內、且 `MEMORY.md` 索引指向該檔，那是正常行為。
 

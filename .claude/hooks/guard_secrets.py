@@ -59,21 +59,41 @@ def main():
 
     role = role_of(session_id, roster)
 
+    def record(code, frag):
+        log({
+            "time": datetime.datetime.now().isoformat(timespec="seconds"),
+            "session_id": session_id,
+            "role": role or "UNREGISTERED",
+            "tool": tool_name,
+            "rule": code,
+            "matched": frag,
+            "input": str(tool_input)[:400],
+        })
+
+    if tool_name == "SendMessage":
+        # 只看收件人，不掃內文（見 policy.sendmessage_verdict）
+        to = (tool_input or {}).get("to", "") if isinstance(tool_input, dict) else ""
+        try:
+            with open(policy.SESSIONS, "r", encoding="utf-8") as f:
+                sessions = json.load(f)
+        except Exception:
+            sessions = {}
+        allowed, code = policy.sendmessage_verdict(role, to, sessions)
+        if code:
+            record(code, to)
+        if allowed:
+            return 0
+        return deny(code, role)
+
     allowed, code, frag = policy.evaluate(role, tool_name, tool_input)
     if allowed:
         return 0
+    record(code, frag)
+    return deny(code, role)
 
+
+def deny(code, role):
     reason = policy.DENY_MESSAGE.get(code, "這個路徑受保護。")
-    log({
-        "time": datetime.datetime.now().isoformat(timespec="seconds"),
-        "session_id": session_id,
-        "role": role or "UNREGISTERED",
-        "tool": tool_name,
-        "rule": code,
-        "matched": frag,
-        "input": str(tool_input)[:400],
-    })
-
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",

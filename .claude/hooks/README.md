@@ -29,7 +29,24 @@
 | ---------------------- | -------------------- | ------------------------------------ |
 | `access.log`           | `.claude/hooks/`     | 每一次被擋下的嘗試：時間、session、角色、工具、命中規則、完整參數 |
 | `roster.json`          | `game-state/public/` | `角色 → session id`。**純文字，任何人都能讀寫**    |
-| `roster-conflicts.log` | `game-state/public/` | 角色被後來的 session 接管的紀錄（認領採後到覆寫，不會被拒絕）  |
+| `roster-sessions.json` | `game-state/public/` | `角色 → {session_id, name, ref, socket}`。SendMessage 規則用它認上帝 |
+| `roster-conflicts.log` | `game-state/public/` | 角色接管的紀錄（後到覆寫）；對局中玩家試圖認領特權角色的**拒絕**紀錄也在這裡 |
+
+## SendMessage：玩家只能發給上帝
+
+`guard_secrets.py` 對 `SendMessage` 只看收件人 `to`，**不掃訊息內文**
+（玩家回報「我讀 secret 被擋」是正當的）。p1～p9 的 `to` 必須是上帝的
+名稱、ref、`名稱 [ref]` 或 `uds:...cc-msg-...` 位址之一，對照 `roster-sessions.json` 的 `god` 項；
+其餘一律擋下並寫 `access.log`（規則 `SENDMSG`）。
+
+god 沒有登記名稱／ref 時無從比對 —— **放行但記一筆 `SENDMSG_UNVERIFIED`**，
+寧可留證據給終局稽核，也不要因為缺資料把整局卡死。其他角色不受此限。
+
+## 對局中禁止玩家認領特權角色
+
+`claim_role.py` 在 `game-state/secret/roles.json` 存在時，拒絕「已登記為 p1～p9 的 session」
+改認領 god／reporter／maintainer。新的 session（例如上帝重啟）仍可接管，
+但會印出警告並在衝突紀錄標「對局進行中」。
 
 
 ## 保護矩陣

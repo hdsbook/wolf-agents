@@ -47,6 +47,9 @@ python .claude/skills/god-audit/transcript_dir.py
 ### 三個實測踩過的假陽性
 
 1. **`uds:` 開頭的位址就是你自己的位址** —— 玩家回覆時複製 `from` 欄位。當成「非 GOD」會**誤報全場九人違規**。
+   你的所有別名（名稱、ref、`名稱 [ref]`、`cc-msg-...` 位址）都在 `game-state/public/roster-sessions.json` 的 `god` 項，
+   比對時全部算上帝。現在 hook 已即時擋下玩家發給非上帝的訊息，`access.log` 裡的 `SENDMSG` 就是未遂紀錄；
+   `SENDMSG_UNVERIFIED` 表示當時沒有你的登記資料、hook 放行了，這些要逐筆看。
 2. **base64 密文會偶然含座位字串** —— 判斷外洩要看**帶引號與冒號的明文結構**，不是裸字串。
 3. **重啟後讀 `memory/` 是標準脈絡回復** —— 先看時間戳。
 

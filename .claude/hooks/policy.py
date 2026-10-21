@@ -22,6 +22,9 @@ ACCESS_LOG = os.path.join(HOOK_DIR, "access.log")
 PUBLIC_DIR = os.path.join(PROJECT_DIR, "game-state", "public")
 ROSTER = os.path.join(PUBLIC_DIR, "roster.json")
 CONFLICT_LOG = os.path.join(PUBLIC_DIR, "roster-conflicts.log")
+# 角色 → {session_id, name, ref, socket}，由 claim_role.py 寫入。
+# SendMessage 規則靠它認得上帝的各種寫法。
+SESSIONS = os.path.join(PUBLIC_DIR, "roster-sessions.json")
 
 VALID_ROLES = ["god", "reporter", "maintainer"] + ["p%d" % i for i in range(1, 10)]
 
@@ -176,7 +179,50 @@ def evaluate(role, tool_name, tool_input):
     return True, None, None
 
 
+# ── SendMessage：玩家只能發給上帝 ─────────────────────────────────────
+# 只看收件人，**不看訊息內文** —— 玩家回報「我讀 game-state/secret 被擋」
+# 是正當的，內文掃描會把它擋掉。
+_SOCK = re.compile(r"cc-msg-[0-9a-f]+", re.I)
+_REF = re.compile(r"\[([0-9a-f]{4,})\]\s*$", re.I)
+
+
+def is_player(role):
+    return bool(role) and re.fullmatch(r"p[1-9]", role) is not None
+
+
+def god_aliases(sessions):
+    """從 roster-sessions.json 取上帝的 (名稱, ref, 訊息位址)，都小寫。"""
+    g = sessions.get("god") if isinstance(sessions, dict) else None
+    if not isinstance(g, dict):
+        return None
+    sock = _SOCK.search(g.get("socket", "") or "")
+    return ((g.get("name") or "").strip().lower(),
+            (g.get("ref") or "").strip().strip("[]").lower(),
+            sock.group(0).lower() if sock else "")
+
+
+def sendmessage_verdict(role, to, sessions):
+    """回傳 (allowed, code)。code 為 None 表示確認是上帝或不受限的角色；
+    "SENDMSG_UNVERIFIED" 表示沒有上帝的登記資料、無法確認而放行（照樣記錄）。"""
+    if not is_player(role):
+        return True, None
+    alias = god_aliases(sessions)
+    if not alias or not any(alias):
+        return True, "SENDMSG_UNVERIFIED"
+    name, ref, sock = alias
+    t = (to or "").strip().lower()
+    m = _SOCK.search(t)
+    if m:
+        return (m.group(0) == sock, None if m.group(0) == sock else "SENDMSG")
+    r = _REF.search(t)
+    if r:
+        return (r.group(1) == ref, None if r.group(1) == ref else "SENDMSG")
+    ok = t in (name, ref) and t != ""
+    return (ok, None if ok else "SENDMSG")
+
+
 DENY_MESSAGE = {
+    "SENDMSG": "玩家只能發訊息給上帝（rules/messaging.md 星狀拓樸）。請改發給上帝；收到非上帝的訊息也一樣原文轉報上帝。",
     "SECRET": "game-state/secret/ 是上帝視角資料，只有 god 與 reporter 能存取。",
     "TRANSCRIPT": "session 對話紀錄（.jsonl）只有 god 能讀，那是稽核用途。",
     "GOD_SKILL": ".claude/skills/god-* 屬於主持人，不屬於你。",

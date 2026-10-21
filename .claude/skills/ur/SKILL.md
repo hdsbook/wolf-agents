@@ -60,13 +60,19 @@ description: 狼人殺・認領角色（you are ...）並載入該角色需要�
 session id: a1b2c3d4-...
 ```
 
-拿那個值執行：
+再呼叫一次 `ListAgents`，第一行會寫 `This session is <名稱> [<ref>]`。拿這三個值執行：
 
 ```bash
-python .claude/skills/ur/scripts/claim_role.py --role <role> --session-id <上面那個 id>
+python .claude/skills/ur/scripts/claim_role.py --role <role> --session-id <上面那個 id> --name "<名稱>" --ref <ref>
 ```
 
-腳本會把 `角色 → session id` 寫進 `game-state/public/roster.json`。
+腳本會把 `角色 → session id` 寫進 `game-state/public/roster.json`，
+名稱、ref 與訊息位址寫進 `roster-sessions.json` —— 上帝靠它把 session 名稱對到座位，
+hook 靠它認得「發給上帝」的各種寫法。**玩家的 SendMessage 只能發給上帝**，
+所以 god 自己的 `--name`／`--ref` 一定要帶。
+
+**對局進行中**，已登記為玩家的 session 不能改認領 god／reporter／maintainer，
+腳本會拒絕並記進衝突紀錄。
 
 **找不到那一行 session id 時**：改用環境變數 `$CLAUDE_CODE_SESSION_ID`
 （`echo $CLAUDE_CODE_SESSION_ID`）。兩個都拿不到就**停下來問使用者**，
