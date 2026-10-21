@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \".claude/hooks/inject_session_id.py\"",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/inject_session_id.py\"",
             "timeout": 10
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \".claude/hooks/guard_secrets.py\"",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_secrets.py\"",
             "timeout": 10
           }
         ]
