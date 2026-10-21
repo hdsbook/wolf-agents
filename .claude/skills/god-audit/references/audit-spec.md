@@ -9,7 +9,8 @@
 
 ## 行為稽核：掃什麼
 
-transcript 位置：`C:\Users\User\.claude\projects\D--Projects-claude-poc-wolf\*.jsonl`
+transcript 位置：`python .claude/skills/god-audit/transcript_dir.py` 印出的目錄底下 `*.jsonl`
+（由專案路徑推算，換機器不必改）。
 
 對每位玩家的 `tool_use` 記錄檢查：
 

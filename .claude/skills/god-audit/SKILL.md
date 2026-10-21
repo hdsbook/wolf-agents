@@ -24,7 +24,13 @@ description: 狼人殺・全場行為稽核與上帝自己的中立性稽核。�
 
 ## A. 玩家行為稽核
 
-掃 `C:\Users\User\.claude\projects\D--Projects-claude-poc-wolf\*.jsonl` 中每位玩家的 `tool_use`：
+transcript 目錄由專案路徑推算，不寫死：
+
+```bash
+python .claude/skills/god-audit/transcript_dir.py
+```
+
+掃它印出的目錄底下 `*.jsonl` 中每位玩家的 `tool_use`：
 
 | 檢查項 | 判定 |
 |---|---|
