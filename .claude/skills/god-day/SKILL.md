@@ -23,7 +23,9 @@ direction = random.choice(['順','逆'])
 
 ### 3. 公告
 
-**參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-dawn/params.json`，
+**參數廣播**：用 `params.py dawn` 產 `game-state/public/mailbox/d{N}-dawn/params.json`
+（順序隨機、收件人只取存活者，見 `god-dispatch` 的「參數檔用腳本產」），
+**只送它印出的 `recipients`**；夜間死者送 `eliminated_recipients` 那一份。
 再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
 訊息本文不進你的上下文，玩家自己渲染（含發言順序表）。
 
@@ -76,8 +78,8 @@ else:                                         繼續
 
 ### 每一位的流程
 
-1. **參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-speak-{位次}/params.json`，
-   再 `/god-dispatch notice` 送給他一個人。參數是他的順位、他要寫的 inbox 路徑、
+1. **參數廣播**：用 `params.py speak --day N --n <位次>` 產 `game-state/public/mailbox/d{N}-speak-{位次}/params.json`
+   （必讀清單由腳本對 `speech-inbox/` 核對；印出 `warning` 時先確認，不要直接送），再 `/god-dispatch notice` 送給他一個人。參數是他的順位、他要寫的 inbox 路徑、
    以及 **`filed_list`：到此為止已回報落檔的完整檔名清單**。
    **不附任何逐字稿。**
 

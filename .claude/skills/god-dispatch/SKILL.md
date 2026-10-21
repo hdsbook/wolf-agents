@@ -96,6 +96,27 @@ python .claude/message-templates/render.py notice --params <notice 的參數>
 
 只有一位收件人時可以直接攤平，不必包 `common`／`recipients`。
 
+### 參數檔用腳本產：`params.py`
+
+`dawn`、`ask_speak`、`ask_vote`、`tally`（連同 `eliminated`）四種不要手寫，跑：
+
+```bash
+python .claude/skills/god-dispatch/params.py dawn  --day N [--dead Px,Py] [--start Px --direction 順序|逆序]
+python .claude/skills/god-dispatch/params.py speak --day N --n <位次> [--pk Px,Py]
+python .claude/skills/god-dispatch/params.py vote  --day N [--pk Px,Py]
+python .claude/skills/god-dispatch/params.py tally --day N --votes <票.json> [--pk Px,Py] [--write-nightlog]
+```
+
+它寫好 `mailbox/<tag>/params.json`，並印出**收件人清單**。照清單送，不要自己列：
+
+- **收件人只取 `secret/roles.json` 的 `alive`**，不從 roster 取。夜間死者另列
+  `eliminated_recipients`，送 `eliminated`（`d{N}-nout`），不送天亮公告
+- **唱票剝掉「槍口：」行**，只在終端機印 `hunter_declarations`
+- **票數必須等於投票人數**，對不上就拒絕產檔
+
+起始位與方向省略時由腳本隨機決定。腳本**不改存活名單**，死亡與出局結算仍由你寫。
+其餘 action（`roster`、`ask_claim`、`game_over`、`ask_mvp`、`abort`）照下面的格式手寫。
+
 ### 這幾個欄位不要自己填 —— 腳本會算
 
 | 欄位 | 從哪裡算出來 |

@@ -7,32 +7,34 @@ description: 狼人殺・白天投票、唱票、平票 PK 與出局結算。含
 
 ## 1. 收票
 
-**參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-vote/params.json`，
-再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
+**參數廣播**：用 `params.py vote --day N` 產 `game-state/public/mailbox/d{N}-vote/params.json`
+（PK 重投加 `--pk`，平票者自動排除），只送它印出的 `recipients`。再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
 
 附：存活名單、公開逐字稿路徑、發言階段的票型指向、規則提醒（平票 PK、逾時棄票、獵人可開槍）。
 
 ## 2. 唱票
 
-收齊後**核對三件事**：
+收齊後把每人回覆的**原文**存成一個 JSON（`{"P1": "投票：P7\n理由：…", …}`，逾時寫 `null`），跑：
 
-```python
-assert len(votes) == len(alive)          # 票數總和 = 存活人數
-tally = Counter(votes.values())
-top = tally.most_common()
-tie = len(top) > 1 and top[1][1] == top[0][1]
+```bash
+python .claude/skills/god-dispatch/params.py tally --day N --votes <票.json> [--pk Px,Py] --write-nightlog
 ```
 
-- 票數總和 = 存活人數（含棄票）
-- 每張票的對象都在存活名單中
-- 有無平票
+它會**核對三件事，任一不過就不產檔**：
 
-**用程式算，不要心算。**
+- 票數總和 = 投票人數（存活人數，含棄票；PK 時扣掉平票者）
+- 每張票的對象都在存活名單中（PK 時只能投平票者）
+- 有無平票 → 平票印出 `next`（進 PK）；PK 再平 → 流局
+
+**「槍口：」行一律不進公開票型**，只出現在終端機的 `hunter_declarations`，
+`--write-nightlog` 把它寫進 `nightlog.json` 的 `hunter_declaration`。
+
+**用程式算，不要心算。** 存活名單由你在結算時更新，腳本不改 `roles.json`。
 
 ## 3. 公布
 
-**參數廣播**：把欄位值寫成 `game-state/public/mailbox/d{N}-tally/params.json`，
-再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
+**參數廣播**：第 2 步的 `tally` 已經產好 `game-state/public/mailbox/d{N}-tally/params.json`
+（出局者的 `d{N}-out` 也一併產好），再 `/god-dispatch notice` 渲染**一次**指路訊息，把同一個字串送給每一位。
 參數含完整票型**與所有投票理由的原文**。
 
 同時寫進 `public/04-votes-dayN.md`。
